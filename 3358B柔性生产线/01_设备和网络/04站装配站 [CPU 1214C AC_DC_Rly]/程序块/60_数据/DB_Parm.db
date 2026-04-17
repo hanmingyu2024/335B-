@@ -1,0 +1,14 @@
+DATA_BLOCK "DB_Parm"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+
+      StationNo : Int := 4;
+      tFeedDelay : Time := T#500MS;
+      tGripDelay : Time := T#500MS;
+      tHandMove : Time := T#1S;
+      tAssemblyDelay : Time := T#1S;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

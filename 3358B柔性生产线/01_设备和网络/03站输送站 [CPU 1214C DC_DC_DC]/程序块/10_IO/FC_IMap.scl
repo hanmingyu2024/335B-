@@ -1,0 +1,16 @@
+// FC_IMap - Station 03
+DB_Station.InHome := %I0.0;
+DB_Station.InRightLimit := %I0.1;
+DB_Station.InLeftLimit := %I0.2;
+DB_Station.InLiftDown := %I0.3;
+DB_Station.InLiftUp := %I0.4;
+DB_Station.InRotLeft := %I0.5;
+DB_Station.InRotRight := %I0.6;
+DB_Station.InArmOut := %I0.7;
+DB_Station.InArmIn := %I1.0;
+DB_Station.InGripOk := %I1.1;
+DB_Station.InServoAlarm := %I1.2;
+DB_Station.PB_Stop := %I2.4;
+DB_Station.PB_Start := %I2.5;
+DB_Station.PB_EStop := %I2.6;
+DB_Station.SelSingle := %I2.7;

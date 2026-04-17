@@ -1,0 +1,13 @@
+// FB_Alarm
+// Alarm summary generation from station fault flags.
+
+DB_Alarm.Active := DB_Station.FaultActive;
+DB_Alarm.Material := DB_Station.FaultMaterial;
+DB_Alarm.Sensor := DB_Station.FaultSensor;
+DB_Alarm.Actuator := DB_Station.FaultActuator;
+DB_Alarm.Motion := DB_Station.FaultMotion;
+
+IF DB_Alarm.Material OR DB_Alarm.Sensor OR DB_Alarm.Actuator OR DB_Alarm.Motion THEN
+    DB_Alarm.Active := TRUE;
+    DB_Station.FaultActive := TRUE;
+END_IF;

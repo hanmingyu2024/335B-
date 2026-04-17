@@ -1,0 +1,132 @@
+DATA_BLOCK "DB_Station"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      // Mode / command
+      PB_Start : Bool := FALSE;
+      PB_Stop : Bool := FALSE;
+      PB_EStop : Bool := FALSE;
+      SelSingle : Bool := FALSE;
+      ModeAuto : Bool := FALSE;
+      ModeManual : Bool := TRUE;
+      RunCmd : Bool := FALSE;
+      EnableAuto : Bool := FALSE;
+      EnableManual : Bool := TRUE;
+      ResetReq : Bool := FALSE;
+
+      // Station state
+      StationReady : Bool := FALSE;
+      StationBusy : Bool := FALSE;
+      StationDone : Bool := FALSE;
+      CycleActive : Bool := FALSE;
+      FaultActive : Bool := FALSE;
+      FaultMaterial : Bool := FALSE;
+      FaultSensor : Bool := FALSE;
+      FaultActuator : Bool := FALSE;
+      FaultMotion : Bool := FALSE;
+      LampCmdYellow : Bool := TRUE;
+      LampCmdGreen : Bool := FALSE;
+      LampCmdRed : Bool := FALSE;
+      Step : Int := 0;
+      ActiveStepLast : Int := 0;
+      ActiveStepWatchdog : Int := 0;
+      ActiveStepLimit : Int := 1000;
+      SortClass : Int := 0;
+      SortWindowReady : Bool := FALSE;
+
+      // Inputs
+      InTopFwd : Bool := FALSE;
+      InTopBwd : Bool := FALSE;
+      InPushFwd : Bool := FALSE;
+      InPushBwd : Bool := FALSE;
+      InOutPos : Bool := FALSE;
+      InSupplyLow : Bool := FALSE;
+      InNoPart : Bool := FALSE;
+      InMetalOk : Bool := FALSE;
+      InPartAtProc : Bool := FALSE;
+      InClampOk : Bool := FALSE;
+      InTableFwd : Bool := FALSE;
+      InTableBwd : Bool := FALSE;
+      InHeadUp : Bool := FALSE;
+      InHeadDown : Bool := FALSE;
+      InHome : Bool := FALSE;
+      InRightLimit : Bool := FALSE;
+      InLeftLimit : Bool := FALSE;
+      InLiftDown : Bool := FALSE;
+      InLiftUp : Bool := FALSE;
+      InRotLeft : Bool := FALSE;
+      InRotRight : Bool := FALSE;
+      InArmOut : Bool := FALSE;
+      InArmIn : Bool := FALSE;
+      InGripOk : Bool := FALSE;
+      InServoAlarm : Bool := FALSE;
+      InPartLow : Bool := FALSE;
+      InPartPresent : Bool := FALSE;
+      InTrayLeft : Bool := FALSE;
+      InTrayRight : Bool := FALSE;
+      InAsmPartAtPos : Bool := FALSE;
+      InStopperOk : Bool := FALSE;
+      InDropOk : Bool := FALSE;
+      InSwingLeft : Bool := FALSE;
+      InSwingRight : Bool := FALSE;
+      InHandDown : Bool := FALSE;
+      InHandUp : Bool := FALSE;
+      InEncB : Bool := FALSE;
+      InEncA : Bool := FALSE;
+      InEncZ : Bool := FALSE;
+      InInfeedPart : Bool := FALSE;
+      InInductive : Bool := FALSE;
+      InFiber1 : Bool := FALSE;
+      InPusher1Fwd : Bool := FALSE;
+      InPusher2Fwd : Bool := FALSE;
+      InPusher3Fwd : Bool := FALSE;
+
+      // Outputs
+      OutTopValve : Bool := FALSE;
+      OutPushValve : Bool := FALSE;
+      OutClampValve : Bool := FALSE;
+      OutTableValve : Bool := FALSE;
+      OutHeadValve : Bool := FALSE;
+      OutPulse : Bool := FALSE;
+      OutDir : Bool := FALSE;
+      OutLiftValve : Bool := FALSE;
+      OutRotLeftValve : Bool := FALSE;
+      OutRotRightValve : Bool := FALSE;
+      OutArmOutValve : Bool := FALSE;
+      OutGripValve : Bool := FALSE;
+      OutReleaseValve : Bool := FALSE;
+      OutStopperValve : Bool := FALSE;
+      OutRotateValve : Bool := FALSE;
+      OutHandDownValve : Bool := FALSE;
+      OutMotorRun : Bool := FALSE;
+      OutPusher1 : Bool := FALSE;
+      OutPusher2 : Bool := FALSE;
+      OutPusher3 : Bool := FALSE;
+      AnalogCmd : Word := W#16#0;
+
+      // Manual commands
+      ManTopValve : Bool := FALSE;
+      ManPushValve : Bool := FALSE;
+      ManClampValve : Bool := FALSE;
+      ManTableValve : Bool := FALSE;
+      ManHeadValve : Bool := FALSE;
+      ManPulse : Bool := FALSE;
+      ManDir : Bool := FALSE;
+      ManLiftUp : Bool := FALSE;
+      ManRotLeft : Bool := FALSE;
+      ManRotRight : Bool := FALSE;
+      ManArmOut : Bool := FALSE;
+      ManGripClamp : Bool := FALSE;
+      ManGripRelease : Bool := FALSE;
+      ManStopper : Bool := FALSE;
+      ManRotate : Bool := FALSE;
+      ManHandDown : Bool := FALSE;
+      ManMotorRun : Bool := FALSE;
+      ManPusher1 : Bool := FALSE;
+      ManPusher2 : Bool := FALSE;
+      ManPusher3 : Bool := FALSE;
+      ManAnalogCmd : Word := W#16#0;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

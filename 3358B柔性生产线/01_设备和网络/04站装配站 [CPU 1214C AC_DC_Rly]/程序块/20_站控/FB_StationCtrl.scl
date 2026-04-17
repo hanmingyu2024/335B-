@@ -1,0 +1,16 @@
+// FB_StationCtrl
+// Station master control calls mode, reset, manual/auto and lamps.
+
+"FC_ModeCtrl"();
+"FC_Reset"();
+
+IF DB_Station.ModeAuto THEN
+    "FC_AutoSeq"();
+ELSE
+    "FC_ManualCtrl"();
+END_IF;
+
+"FC_Lights"();
+
+DB_Station.StationReady := NOT DB_Station.FaultActive;
+DB_Station.StationBusy := DB_Station.CycleActive;

@@ -1,0 +1,23 @@
+DATA_BLOCK "DB_Line"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      CmdAuto : Bool := FALSE;
+      CmdStart : Bool := FALSE;
+      CmdStop : Bool := FALSE;
+      CmdReset : Bool := FALSE;
+      StsReady : Bool := FALSE;
+      StsRun : Bool := FALSE;
+      StsFault : Bool := FALSE;
+      StsPaused : Bool := FALSE;
+      CycleActive : Bool := FALSE;
+      Step : Int := 0;
+      CurrentCycle : DInt := 0;
+      TotalCount : DInt := 0;
+      ActiveSource : Int := 0;
+      ActiveTarget : Int := 0;
+      FaultCode : Word := W#16#0;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

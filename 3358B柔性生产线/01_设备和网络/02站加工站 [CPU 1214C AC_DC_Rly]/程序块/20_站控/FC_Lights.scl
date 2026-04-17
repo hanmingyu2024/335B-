@@ -1,0 +1,16 @@
+// FC_Lights
+// Three-color lamp command generation.
+
+IF DB_Station.FaultActive THEN
+    DB_Station.LampCmdRed := TRUE;
+    DB_Station.LampCmdYellow := FALSE;
+    DB_Station.LampCmdGreen := FALSE;
+ELSIF DB_Station.CycleActive THEN
+    DB_Station.LampCmdRed := FALSE;
+    DB_Station.LampCmdYellow := FALSE;
+    DB_Station.LampCmdGreen := TRUE;
+ELSE
+    DB_Station.LampCmdRed := FALSE;
+    DB_Station.LampCmdYellow := TRUE;
+    DB_Station.LampCmdGreen := FALSE;
+END_IF;

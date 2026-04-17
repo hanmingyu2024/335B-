@@ -1,0 +1,94 @@
+// FC_AutoSeq - Station 05 sort sequence
+
+IF NOT DB_Station.RunCmd THEN
+    DB_Station.CycleActive := FALSE;
+    DB_Station.OutMotorRun := FALSE;
+    DB_Station.OutPusher1 := FALSE;
+    DB_Station.OutPusher2 := FALSE;
+    DB_Station.OutPusher3 := FALSE;
+    DB_Station.AnalogCmd := 0;
+    RETURN;
+END_IF;
+
+DB_Station.AnalogCmd := DB_Parm.AnalogSpeed;
+
+IF DB_Station.CycleActive AND (DB_Station.Step <> 0) THEN
+    IF DB_Station.Step <> DB_Station.ActiveStepLast THEN
+        DB_Station.ActiveStepLast := DB_Station.Step;
+        DB_Station.ActiveStepWatchdog := 0;
+    ELSIF DB_Station.ActiveStepWatchdog < DB_Station.ActiveStepLimit THEN
+        DB_Station.ActiveStepWatchdog := DB_Station.ActiveStepWatchdog + 1;
+    ELSE
+        DB_Station.FaultActuator := TRUE;
+        DB_Station.FaultActive := TRUE;
+        DB_Station.RunCmd := FALSE;
+        DB_Station.CycleActive := FALSE;
+        RETURN;
+    END_IF;
+ELSE
+    DB_Station.ActiveStepLast := DB_Station.Step;
+    DB_Station.ActiveStepWatchdog := 0;
+END_IF;
+
+CASE DB_Station.Step OF
+    0:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := FALSE;
+        DB_Station.OutMotorRun := TRUE;
+        IF DB_Comm.PartReceived AND DB_Station.InInfeedPart THEN
+            DB_Station.Step := 10;
+        END_IF;
+    10:
+        DB_Station.CycleActive := TRUE;
+        IF DB_Station.InInductive THEN
+            DB_Station.SortClass := 1;
+        ELSIF DB_Station.InFiber1 THEN
+            DB_Station.SortClass := 2;
+        ELSE
+            DB_Station.SortClass := 3;
+        END_IF;
+        DB_Station.Step := 20;
+    20:
+        IF DB_Station.SortWindowReady THEN
+            DB_Station.Step := 30;
+        END_IF;
+    30:
+        CASE DB_Station.SortClass OF
+            1:
+                DB_Station.OutPusher1 := TRUE;
+                IF DB_Station.InPusher1Fwd THEN
+                    DB_Station.Step := 40;
+                END_IF;
+            2:
+                DB_Station.OutPusher2 := TRUE;
+                IF DB_Station.InPusher2Fwd THEN
+                    DB_Station.Step := 40;
+                END_IF;
+            3:
+                DB_Station.OutPusher3 := TRUE;
+                IF DB_Station.InPusher3Fwd THEN
+                    DB_Station.Step := 40;
+                END_IF;
+        ELSE
+            DB_Station.Step := 0;
+        END_CASE;
+    40:
+        DB_Station.OutPusher1 := FALSE;
+        DB_Station.OutPusher2 := FALSE;
+        DB_Station.OutPusher3 := FALSE;
+        DB_Station.Step := 50;
+    50:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := TRUE;
+        DB_Station.OutMotorRun := TRUE;
+        DB_Comm.ProcessDone := TRUE;
+        IF DB_Comm.DoneAck AND (NOT DB_Station.InInfeedPart) THEN
+            DB_Comm.ProcessDone := FALSE;
+            DB_Comm.PartReceived := FALSE;
+            DB_Station.StationDone := FALSE;
+            DB_Station.SortClass := 0;
+            DB_Station.Step := 0;
+        END_IF;
+ELSE
+    DB_Station.Step := 0;
+END_CASE;

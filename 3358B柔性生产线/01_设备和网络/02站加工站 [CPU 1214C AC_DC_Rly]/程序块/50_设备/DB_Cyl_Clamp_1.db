@@ -1,0 +1,17 @@
+DATA_BLOCK "DB_Cyl_Clamp_1"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      Enable : Bool := TRUE;
+      CmdExtend : Bool := FALSE;
+      FbExtend : Bool := FALSE;
+      FbRetract : Bool := FALSE;
+      OutValve : Bool := FALSE;
+      OkExtend : Bool := FALSE;
+      OkRetract : Bool := FALSE;
+      Fault : Bool := FALSE;
+      tTimeout : Time := T#1S;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

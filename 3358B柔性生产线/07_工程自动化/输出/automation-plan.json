@@ -1,0 +1,189 @@
+﻿{
+    "GeneratedAt":  "2026-04-17 21:38:01",
+    "RepoRoot":  "D:\\335B柔性生产线\\3358B柔性生产线",
+    "PlanOnly":  false,
+    "TiaAssemblyDetected":  true,
+    "TiaAssemblyPath":  "D:\\Program Files\\Siemens\\Automation\\Portal V17\\PublicAPI\\V17\\Siemens.Engineering.dll",
+    "TemplateCloneEnabled":  true,
+    "ProjectTemplatePath":  "C:\\Users\\韩明宇\\Desktop\\v17程序\\335B柔性生产线\\335B柔性生产线.ap17",
+    "ProjectTargetPath":  "D:\\TIAProjects\\3358B\\335B柔性生产线.ap17",
+    "Subnet":  {
+                   "Name":  "PN_3358B",
+                   "TypeIdentifier":  "System:Subnet.Ethernet",
+                   "SubnetMask":  "255.255.255.0",
+                   "RouterAddress":  ""
+               },
+    "ConnectionStrategy":  {
+                               "mode":  "template-fixed-ids",
+                               "description":  "PUT/GET connection objects are pre-created in the TIA template project. Automation keeps device names stable and only stamps network parameters."
+                           },
+    "Stations":  [
+                     {
+                         "StationId":  "S01",
+                         "DeviceName":  "S7-1200 station_1",
+                         "DeviceNameCandidates":  [
+                                                      "S7-1200 station_1",
+                                                      "01站供料站",
+                                                      "01站供料站 [CPU 1214C AC_DC_Rly]"
+                                                  ],
+                         "InterfaceNameHint":  "PN/IE_1",
+                         "IpAddress":  "192.168.10.11",
+                         "SubnetMask":  "255.255.255.0",
+                         "RouterAddress":  "",
+                         "PnDeviceName":  "plc-3358b-s01",
+                         "CreateIoSystem":  false
+                     },
+                     {
+                         "StationId":  "S02",
+                         "DeviceName":  "S7-1200 station_2",
+                         "DeviceNameCandidates":  [
+                                                      "S7-1200 station_2",
+                                                      "02站加工站",
+                                                      "02站加工站 [CPU 1214C AC_DC_Rly]"
+                                                  ],
+                         "InterfaceNameHint":  "PN/IE_1",
+                         "IpAddress":  "192.168.10.12",
+                         "SubnetMask":  "255.255.255.0",
+                         "RouterAddress":  "",
+                         "PnDeviceName":  "plc-3358b-s02",
+                         "CreateIoSystem":  false
+                     },
+                     {
+                         "StationId":  "S03",
+                         "DeviceName":  "S7-1200 station_3",
+                         "DeviceNameCandidates":  [
+                                                      "S7-1200 station_3",
+                                                      "03站输送站",
+                                                      "03站输送站 [CPU 1214C DC_DC_DC]"
+                                                  ],
+                         "InterfaceNameHint":  "PN/IE_1",
+                         "IpAddress":  "192.168.10.13",
+                         "SubnetMask":  "255.255.255.0",
+                         "RouterAddress":  "",
+                         "PnDeviceName":  "plc-3358b-s03",
+                         "CreateIoSystem":  false
+                     },
+                     {
+                         "StationId":  "S04",
+                         "DeviceName":  "S7-1200 station_4",
+                         "DeviceNameCandidates":  [
+                                                      "S7-1200 station_4",
+                                                      "04站装配站",
+                                                      "04站装配站 [CPU 1214C AC_DC_Rly]"
+                                                  ],
+                         "InterfaceNameHint":  "PN/IE_1",
+                         "IpAddress":  "192.168.10.14",
+                         "SubnetMask":  "255.255.255.0",
+                         "RouterAddress":  "",
+                         "PnDeviceName":  "plc-3358b-s04",
+                         "CreateIoSystem":  false
+                     },
+                     {
+                         "StationId":  "S05",
+                         "DeviceName":  "S7-1200 station_5",
+                         "DeviceNameCandidates":  [
+                                                      "S7-1200 station_5",
+                                                      "05站分拣站",
+                                                      "05站分拣站 [CPU 1214C AC_DC_Rly]"
+                                                  ],
+                         "InterfaceNameHint":  "PN/IE_1",
+                         "IpAddress":  "192.168.10.15",
+                         "SubnetMask":  "255.255.255.0",
+                         "RouterAddress":  "",
+                         "PnDeviceName":  "plc-3358b-s05",
+                         "CreateIoSystem":  false
+                     }
+                 ],
+    "PutGetConnections":  [
+                              {
+                                  "Link":  "S02",
+                                  "ConnectionId":  2,
+                                  "LocalStation":  "S01",
+                                  "RemoteStation":  "S02",
+                                  "LocalShadowDb":  "DB_Link_S02",
+                                  "RemoteCommDb":  "DB_Comm",
+                                  "FieldCount":  18,
+                                  "Directions":  "01-\u003e02, 02-\u003e01"
+                              },
+                              {
+                                  "Link":  "S03",
+                                  "ConnectionId":  3,
+                                  "LocalStation":  "S01",
+                                  "RemoteStation":  "S03",
+                                  "LocalShadowDb":  "DB_Link_S03",
+                                  "RemoteCommDb":  "DB_Comm",
+                                  "FieldCount":  18,
+                                  "Directions":  "01-\u003e03, 03-\u003e01"
+                              },
+                              {
+                                  "Link":  "S04",
+                                  "ConnectionId":  4,
+                                  "LocalStation":  "S01",
+                                  "RemoteStation":  "S04",
+                                  "LocalShadowDb":  "DB_Link_S04",
+                                  "RemoteCommDb":  "DB_Comm",
+                                  "FieldCount":  18,
+                                  "Directions":  "01-\u003e04, 04-\u003e01"
+                              },
+                              {
+                                  "Link":  "S05",
+                                  "ConnectionId":  5,
+                                  "LocalStation":  "S01",
+                                  "RemoteStation":  "S05",
+                                  "LocalShadowDb":  "DB_Link_S05",
+                                  "RemoteCommDb":  "DB_Comm",
+                                  "FieldCount":  16,
+                                  "Directions":  "01-\u003e05, 05-\u003e01"
+                              }
+                          ],
+    "LinkSummary":  [
+                        {
+                            "Link":  "S02",
+                            "Direction":  "01-\u003e02",
+                            "FieldCount":  7,
+                            "Categories":  "命令, 心跳, 握手"
+                        },
+                        {
+                            "Link":  "S02",
+                            "Direction":  "02-\u003e01",
+                            "FieldCount":  11,
+                            "Categories":  "心跳, 状态, 握手"
+                        },
+                        {
+                            "Link":  "S03",
+                            "Direction":  "01-\u003e03",
+                            "FieldCount":  9,
+                            "Categories":  "命令, 心跳, 任务"
+                        },
+                        {
+                            "Link":  "S03",
+                            "Direction":  "03-\u003e01",
+                            "FieldCount":  9,
+                            "Categories":  "心跳, 状态, 任务"
+                        },
+                        {
+                            "Link":  "S04",
+                            "Direction":  "01-\u003e04",
+                            "FieldCount":  7,
+                            "Categories":  "命令, 心跳, 握手"
+                        },
+                        {
+                            "Link":  "S04",
+                            "Direction":  "04-\u003e01",
+                            "FieldCount":  11,
+                            "Categories":  "心跳, 状态, 握手"
+                        },
+                        {
+                            "Link":  "S05",
+                            "Direction":  "01-\u003e05",
+                            "FieldCount":  7,
+                            "Categories":  "命令, 心跳, 握手"
+                        },
+                        {
+                            "Link":  "S05",
+                            "Direction":  "05-\u003e01",
+                            "FieldCount":  9,
+                            "Categories":  "心跳, 状态, 握手"
+                        }
+                    ]
+}

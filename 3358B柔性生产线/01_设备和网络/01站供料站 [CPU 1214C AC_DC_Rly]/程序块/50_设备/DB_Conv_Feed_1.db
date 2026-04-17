@@ -1,0 +1,16 @@
+DATA_BLOCK "DB_Conv_Feed_1"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      Enable : Bool := TRUE;
+      CmdRun : Bool := FALSE;
+      InPos : Bool := FALSE;
+      OutPos : Bool := FALSE;
+      HasPart : Bool := FALSE;
+      TransferDone : Bool := FALSE;
+      RunOut : Bool := FALSE;
+      tRunTimeout : Time := T#2S;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

@@ -1,0 +1,127 @@
+// FC_AutoSeq - Station 04 assembly sequence
+
+IF NOT DB_Station.RunCmd THEN
+    DB_Station.CycleActive := FALSE;
+    DB_Station.OutStopperValve := FALSE;
+    DB_Station.OutTopValve := FALSE;
+    DB_Station.OutRotateValve := FALSE;
+    DB_Station.OutGripValve := FALSE;
+    DB_Station.OutHandDownValve := FALSE;
+    DB_Station.OutArmOutValve := FALSE;
+    RETURN;
+END_IF;
+
+IF DB_Station.InPartLow OR NOT DB_Station.InPartPresent THEN
+    DB_Station.FaultMaterial := TRUE;
+    DB_Station.FaultActive := TRUE;
+    DB_Station.RunCmd := FALSE;
+    RETURN;
+END_IF;
+
+IF DB_Station.CycleActive AND (DB_Station.Step <> 0) THEN
+    IF DB_Station.Step <> DB_Station.ActiveStepLast THEN
+        DB_Station.ActiveStepLast := DB_Station.Step;
+        DB_Station.ActiveStepWatchdog := 0;
+    ELSIF DB_Station.ActiveStepWatchdog < DB_Station.ActiveStepLimit THEN
+        DB_Station.ActiveStepWatchdog := DB_Station.ActiveStepWatchdog + 1;
+    ELSE
+        DB_Station.FaultActuator := TRUE;
+        DB_Station.FaultActive := TRUE;
+        DB_Station.RunCmd := FALSE;
+        DB_Station.CycleActive := FALSE;
+        RETURN;
+    END_IF;
+ELSE
+    DB_Station.ActiveStepLast := DB_Station.Step;
+    DB_Station.ActiveStepWatchdog := 0;
+END_IF;
+
+CASE DB_Station.Step OF
+    0:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := FALSE;
+        IF DB_Comm.PartReceived AND DB_Station.InAsmPartAtPos THEN
+            DB_Station.Step := 10;
+        END_IF;
+    10:
+        DB_Station.CycleActive := TRUE;
+        DB_Station.OutStopperValve := TRUE;
+        DB_Station.OutTopValve := TRUE;
+        IF DB_Station.InTopFwd AND DB_Station.InStopperOk THEN
+            DB_Station.Step := 20;
+        END_IF;
+    20:
+        DB_Station.OutRotateValve := FALSE;
+        IF DB_Station.InSwingLeft THEN
+            DB_Station.Step := 30;
+        END_IF;
+    30:
+        DB_Station.OutArmOutValve := TRUE;
+        IF DB_Station.InArmOut THEN
+            DB_Station.Step := 40;
+        END_IF;
+    40:
+        DB_Station.OutHandDownValve := TRUE;
+        IF DB_Station.InHandDown THEN
+            DB_Station.Step := 50;
+        END_IF;
+    50:
+        DB_Station.OutGripValve := TRUE;
+        IF DB_Station.InGripOk THEN
+            DB_Station.Step := 60;
+        END_IF;
+    60:
+        DB_Station.OutHandDownValve := FALSE;
+        IF DB_Station.InHandUp THEN
+            DB_Station.Step := 70;
+        END_IF;
+    70:
+        DB_Station.OutArmOutValve := FALSE;
+        IF DB_Station.InArmIn THEN
+            DB_Station.Step := 80;
+        END_IF;
+    80:
+        DB_Station.OutRotateValve := TRUE;
+        IF DB_Station.InSwingRight THEN
+            DB_Station.Step := 90;
+        END_IF;
+    90:
+        DB_Station.OutArmOutValve := TRUE;
+        IF DB_Station.InArmOut THEN
+            DB_Station.Step := 100;
+        END_IF;
+    100:
+        DB_Station.OutHandDownValve := TRUE;
+        IF DB_Station.InHandDown THEN
+            DB_Station.Step := 110;
+        END_IF;
+    110:
+        DB_Station.OutGripValve := FALSE;
+        DB_Station.Step := 120;
+    120:
+        DB_Station.OutHandDownValve := FALSE;
+        DB_Station.OutArmOutValve := FALSE;
+        DB_Station.OutTopValve := FALSE;
+        DB_Station.OutStopperValve := FALSE;
+        IF DB_Station.InHandUp AND DB_Station.InArmIn AND DB_Station.InTopBwd THEN
+            DB_Station.Step := 130;
+        END_IF;
+    130:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := TRUE;
+        DB_Comm.ProcessDone := TRUE;
+        DB_Comm.PartReady := TRUE;
+        DB_Comm.ReqOut := TRUE;
+        IF DB_Comm.TakeDone THEN
+            DB_Comm.ReqOut := FALSE;
+            DB_Comm.PartReady := FALSE;
+            DB_Comm.ProcessDone := FALSE;
+            DB_Comm.PartReceived := FALSE;
+            DB_Station.StationDone := FALSE;
+            DB_Station.Step := 0;
+        ELSIF NOT DB_Station.RunCmd THEN
+            DB_Station.Step := 0;
+        END_IF;
+ELSE
+    DB_Station.Step := 0;
+END_CASE;

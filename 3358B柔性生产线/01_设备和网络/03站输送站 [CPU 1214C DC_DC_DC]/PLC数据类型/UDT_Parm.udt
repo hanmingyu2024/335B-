@@ -1,0 +1,12 @@
+TYPE "UDT_Parm"
+VERSION : 0.1
+   STRUCT
+      StationNo : Int;
+      tAutoStep : Time;
+      tCylinderTimeout : Time;
+      tSensorTimeout : Time;
+      tMotionTimeout : Time;
+      tGripDelay : Time;
+      AnalogSpeed : Word;
+   END_STRUCT;
+END_TYPE

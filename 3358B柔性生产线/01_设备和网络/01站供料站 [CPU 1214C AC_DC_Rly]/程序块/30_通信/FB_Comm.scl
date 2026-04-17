@@ -1,0 +1,26 @@
+// FB_Comm
+// Station 01 command/status and source-side handshake.
+
+DB_Comm.HeartbeatTx := NOT DB_Comm.HeartbeatTx;
+
+DB_Station.ResetReq := DB_Station.ResetReq OR DB_Comm.CmdReset;
+
+DB_Comm.StsReady := DB_Station.StationReady;
+DB_Comm.StsBusy := DB_Station.StationBusy;
+DB_Comm.StsDone := DB_Station.StationDone;
+DB_Comm.StsFault := DB_Station.FaultActive;
+DB_Comm.StepNo := DB_Station.Step;
+DB_Comm.ReqIn := FALSE;
+DB_Comm.AllowIn := FALSE;
+DB_Comm.PlaceDone := FALSE;
+DB_Comm.PartReceived := FALSE;
+DB_Comm.ProcessDone := FALSE;
+DB_Comm.DoneAck := FALSE;
+DB_Comm.ReadyForJob := FALSE;
+DB_Comm.JobBusy := FALSE;
+DB_Comm.JobDone := FALSE;
+
+IF DB_Comm.CmdStop THEN
+    DB_Station.RunCmd := FALSE;
+    DB_Station.CycleActive := FALSE;
+END_IF;

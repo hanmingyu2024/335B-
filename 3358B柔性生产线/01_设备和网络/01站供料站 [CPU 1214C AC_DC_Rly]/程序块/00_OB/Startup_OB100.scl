@@ -1,0 +1,43 @@
+// Startup_OB100
+// Startup initialization. Keep OB123 only for software generated use.
+
+DB_Station.ModeAuto := FALSE;
+DB_Station.ModeManual := TRUE;
+DB_Station.RunCmd := FALSE;
+DB_Station.EnableAuto := FALSE;
+DB_Station.EnableManual := TRUE;
+DB_Station.ResetReq := FALSE;
+DB_Station.CycleActive := FALSE;
+DB_Station.StationDone := FALSE;
+DB_Station.FaultActive := FALSE;
+DB_Station.FaultSensor := FALSE;
+DB_Station.FaultActuator := FALSE;
+DB_Station.FaultMotion := FALSE;
+DB_Station.Step := 0;
+DB_Station.ActiveStepLast := 0;
+DB_Station.ActiveStepWatchdog := 0;
+DB_Station.LampCmdYellow := TRUE;
+DB_Station.LampCmdGreen := FALSE;
+DB_Station.LampCmdRed := FALSE;
+
+DB_Comm.CmdAuto := FALSE;
+DB_Comm.CmdStart := FALSE;
+DB_Comm.CmdStop := FALSE;
+DB_Comm.CmdReset := FALSE;
+DB_Comm.HeartbeatTx := FALSE;
+
+DB_Line.CmdAuto := FALSE;
+DB_Line.CmdStart := FALSE;
+DB_Line.CmdStop := FALSE;
+DB_Line.CmdReset := FALSE;
+DB_Line.StsReady := FALSE;
+DB_Line.StsRun := FALSE;
+DB_Line.StsFault := FALSE;
+DB_Line.StsPaused := FALSE;
+DB_Line.CycleActive := FALSE;
+DB_Line.Step := 0;
+DB_Line.CurrentCycle := 0;
+DB_Line.TotalCount := 0;
+DB_Line.ActiveSource := 0;
+DB_Line.ActiveTarget := 0;
+DB_Line.FaultCode := W#16#0;

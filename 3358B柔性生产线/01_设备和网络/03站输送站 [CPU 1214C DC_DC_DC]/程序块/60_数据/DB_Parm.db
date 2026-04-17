@@ -1,0 +1,28 @@
+DATA_BLOCK "DB_Parm"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+
+      StationNo : Int := 3;
+      tPickDelay : Time := T#500MS;
+      tPlaceDelay : Time := T#500MS;
+      tLiftMove : Time := T#1S;
+      tServoMove : Time := T#2S;
+      AxisPulsePerRev : DInt := 10000;
+      AxisTravelPerRevMm : Real := 39.0;
+      AxisFeedPosMm : Real := 4.0;
+      AxisProcessPosMm : Real := 113.5;
+      AxisAssemblyPosMm : Real := 303.0;
+      AxisSortPosMm : Real := 408.0;
+      AxisHomePulse : DInt := 0;
+      AxisFeedPulse : DInt := 1026;
+      AxisProcessPulse : DInt := 29103;
+      AxisAssemblyPulse : DInt := 77692;
+      AxisSortPulse : DInt := 104615;
+      AxisPulsePerCycle : DInt := 512;
+      AxisHomeDirNegative : Bool := TRUE;
+      AxisSpeedLimitHint : Int := 20;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

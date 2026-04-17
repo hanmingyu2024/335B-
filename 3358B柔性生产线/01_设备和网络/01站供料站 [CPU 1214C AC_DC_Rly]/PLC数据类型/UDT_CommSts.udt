@@ -1,0 +1,19 @@
+TYPE "UDT_CommSts"
+VERSION : 0.1
+   STRUCT
+      HeartbeatTx : Bool;
+      HeartbeatRx : Bool;
+      StsReady : Bool;
+      StsBusy : Bool;
+      StsDone : Bool;
+      StsFault : Bool;
+      StepNo : Int;
+      ReqOut : Bool;
+      PartReady : Bool;
+      PartReceived : Bool;
+      ProcessDone : Bool;
+      ReadyForJob : Bool;
+      JobBusy : Bool;
+      JobDone : Bool;
+   END_STRUCT;
+END_TYPE

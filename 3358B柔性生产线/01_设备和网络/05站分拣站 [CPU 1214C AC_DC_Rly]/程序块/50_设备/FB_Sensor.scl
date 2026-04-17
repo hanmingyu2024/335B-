@@ -1,0 +1,7 @@
+// FB_Sensor
+// Assumed interface: InSig, DelayOn, DelayOff, Valid, Rising, Falling.
+
+#Rising := #InSig AND NOT #LastIn;
+#Falling := NOT #InSig AND #LastIn;
+#Valid := #InSig;
+#LastIn := #InSig;

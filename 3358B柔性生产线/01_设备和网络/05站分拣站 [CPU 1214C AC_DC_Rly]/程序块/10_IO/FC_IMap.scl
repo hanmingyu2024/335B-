@@ -1,0 +1,14 @@
+// FC_IMap - Station 05
+DB_Station.InEncB := %I0.0;
+DB_Station.InEncA := %I0.1;
+DB_Station.InEncZ := %I0.2;
+DB_Station.InInfeedPart := %I0.3;
+DB_Station.InInductive := %I0.4;
+DB_Station.InFiber1 := %I0.5;
+DB_Station.InPusher1Fwd := %I0.7;
+DB_Station.InPusher2Fwd := %I1.0;
+DB_Station.InPusher3Fwd := %I1.1;
+DB_Station.PB_Stop := %I1.2;
+DB_Station.PB_Start := %I1.3;
+DB_Station.PB_EStop := %I1.4;
+DB_Station.SelSingle := %I1.5;

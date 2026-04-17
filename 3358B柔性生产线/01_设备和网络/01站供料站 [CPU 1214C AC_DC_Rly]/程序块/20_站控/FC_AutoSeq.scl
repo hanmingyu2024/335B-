@@ -1,0 +1,84 @@
+// FC_AutoSeq - Station 01 supply sequence
+
+IF NOT DB_Station.RunCmd THEN
+    DB_Station.CycleActive := FALSE;
+    DB_Station.OutTopValve := FALSE;
+    DB_Station.OutPushValve := FALSE;
+    RETURN;
+END_IF;
+
+IF DB_Station.InSupplyLow OR DB_Station.InNoPart THEN
+    DB_Station.FaultMaterial := TRUE;
+    DB_Station.FaultActive := TRUE;
+    DB_Station.RunCmd := FALSE;
+    RETURN;
+END_IF;
+
+IF DB_Station.CycleActive AND (DB_Station.Step <> 0) THEN
+    IF DB_Station.Step <> DB_Station.ActiveStepLast THEN
+        DB_Station.ActiveStepLast := DB_Station.Step;
+        DB_Station.ActiveStepWatchdog := 0;
+    ELSIF DB_Station.ActiveStepWatchdog < DB_Station.ActiveStepLimit THEN
+        DB_Station.ActiveStepWatchdog := DB_Station.ActiveStepWatchdog + 1;
+    ELSE
+        DB_Station.FaultActuator := TRUE;
+        DB_Station.FaultActive := TRUE;
+        DB_Station.RunCmd := FALSE;
+        DB_Station.CycleActive := FALSE;
+        RETURN;
+    END_IF;
+ELSE
+    DB_Station.ActiveStepLast := DB_Station.Step;
+    DB_Station.ActiveStepWatchdog := 0;
+END_IF;
+
+CASE DB_Station.Step OF
+    0:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := FALSE;
+        DB_Station.OutTopValve := FALSE;
+        DB_Station.OutPushValve := FALSE;
+        IF DB_Station.InMetalOk AND (NOT DB_Comm.PartReady) AND (NOT DB_Station.InOutPos) THEN
+            DB_Station.Step := 10;
+        END_IF;
+    10:
+        DB_Station.CycleActive := TRUE;
+        DB_Station.OutTopValve := TRUE;
+        IF DB_Station.InTopFwd THEN
+            DB_Station.Step := 20;
+        END_IF;
+    20:
+        DB_Station.OutPushValve := TRUE;
+        IF DB_Station.InPushFwd THEN
+            DB_Station.Step := 30;
+        END_IF;
+    30:
+        IF DB_Station.InOutPos THEN
+            DB_Station.Step := 40;
+        END_IF;
+    40:
+        DB_Station.OutPushValve := FALSE;
+        IF DB_Station.InPushBwd THEN
+            DB_Station.Step := 50;
+        END_IF;
+    50:
+        DB_Station.OutTopValve := FALSE;
+        IF DB_Station.InTopBwd THEN
+            DB_Station.Step := 60;
+        END_IF;
+    60:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := TRUE;
+        DB_Comm.PartReady := DB_Station.InOutPos;
+        DB_Comm.ReqOut := DB_Comm.PartReady;
+        IF DB_Comm.TakeDone THEN
+            DB_Comm.ReqOut := FALSE;
+            DB_Comm.PartReady := FALSE;
+            DB_Station.StationDone := FALSE;
+            DB_Station.Step := 0;
+        ELSIF NOT DB_Station.RunCmd THEN
+            DB_Station.Step := 0;
+        END_IF;
+ELSE
+    DB_Station.Step := 0;
+END_CASE;

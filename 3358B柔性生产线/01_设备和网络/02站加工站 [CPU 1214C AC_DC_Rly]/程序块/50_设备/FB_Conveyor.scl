@@ -1,0 +1,6 @@
+// FB_Conveyor
+// Assumed interface: CmdRun, InPos, OutPos, OutRun, HasPart, TransferDone.
+
+#OutRun := #CmdRun;
+#HasPart := #InPos OR #OutPos;
+#TransferDone := #CmdRun AND #OutPos;

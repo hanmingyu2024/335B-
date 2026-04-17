@@ -1,0 +1,309 @@
+// FC_AutoSeq - Station 03 transfer sequence
+// Horizontal axis order is Home(0) -> Feed(1) -> Process(2) -> Assembly(4) -> Sort(5).
+// Positive process direction is I0.2 -> I0.1.
+
+IF DB_Station.InHome THEN
+    DB_Station.AxisHomed := TRUE;
+    IF (DB_Station.Step = 0) AND (NOT DB_Station.CycleActive) AND (NOT DB_Station.AxisMoveBusy) THEN
+        DB_Station.AxisCurrentStation := 0;
+        DB_Station.AxisCurrentPulse := DB_Parm.AxisHomePulse;
+    END_IF;
+END_IF;
+
+IF DB_Station.InServoAlarm THEN
+    DB_Station.OutPulse := FALSE;
+    DB_Station.OutLiftValve := FALSE;
+    DB_Station.OutRotLeftValve := FALSE;
+    DB_Station.OutRotRightValve := FALSE;
+    DB_Station.OutArmOutValve := FALSE;
+    DB_Station.OutGripValve := FALSE;
+    DB_Station.OutReleaseValve := FALSE;
+    DB_Station.AxisMoveBusy := FALSE;
+    DB_Station.FaultMotion := TRUE;
+    DB_Station.FaultActive := TRUE;
+    DB_Station.RunCmd := FALSE;
+    RETURN;
+END_IF;
+
+IF NOT DB_Station.RunCmd THEN
+    DB_Station.CycleActive := FALSE;
+    DB_Station.OutPulse := FALSE;
+    DB_Station.OutLiftValve := FALSE;
+    DB_Station.OutRotLeftValve := FALSE;
+    DB_Station.OutRotRightValve := FALSE;
+    DB_Station.OutArmOutValve := FALSE;
+    DB_Station.OutGripValve := FALSE;
+    DB_Station.OutReleaseValve := FALSE;
+    DB_Station.AxisMoveBusy := FALSE;
+    DB_Comm.JobBusy := FALSE;
+    RETURN;
+END_IF;
+
+IF DB_Station.CycleActive AND (DB_Station.Step <> 0) THEN
+    IF DB_Station.Step <> DB_Station.ActiveStepLast THEN
+        DB_Station.ActiveStepLast := DB_Station.Step;
+        DB_Station.ActiveStepWatchdog := 0;
+    ELSIF DB_Station.ActiveStepWatchdog < DB_Station.ActiveStepLimit THEN
+        DB_Station.ActiveStepWatchdog := DB_Station.ActiveStepWatchdog + 1;
+    ELSE
+        DB_Station.FaultActuator := TRUE;
+        DB_Station.FaultActive := TRUE;
+        DB_Station.RunCmd := FALSE;
+        DB_Station.CycleActive := FALSE;
+        DB_Station.AxisMoveBusy := FALSE;
+        DB_Station.OutPulse := FALSE;
+        RETURN;
+    END_IF;
+ELSE
+    DB_Station.ActiveStepLast := DB_Station.Step;
+    DB_Station.ActiveStepWatchdog := 0;
+END_IF;
+
+CASE DB_Station.Step OF
+    0:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := FALSE;
+        DB_Station.OutPulse := FALSE;
+        DB_Station.AxisMoveBusy := FALSE;
+        DB_Comm.JobBusy := FALSE;
+        DB_Comm.JobDone := FALSE;
+        DB_Comm.ReadyForJob :=
+            DB_Station.AxisHomed
+            AND DB_Station.InLiftUp
+            AND DB_Station.InArmIn
+            AND DB_Comm.PeerAlive
+            AND (NOT DB_Station.FaultActive);
+
+        IF NOT DB_Station.AxisHomed THEN
+            IF DB_Station.InLiftUp AND DB_Station.InArmIn THEN
+                DB_Station.Step := 5;
+            END_IF;
+        ELSIF DB_Comm.TransferJob AND DB_Comm.ReadyForJob THEN
+            DB_Station.AxisPickStation := DB_Comm.JobSource;
+            DB_Station.AxisPlaceStation := DB_Comm.JobTarget;
+
+            IF ((DB_Station.AxisPickStation <> 1) AND (DB_Station.AxisPickStation <> 2) AND (DB_Station.AxisPickStation <> 4) AND (DB_Station.AxisPickStation <> 5))
+                OR ((DB_Station.AxisPlaceStation <> 1) AND (DB_Station.AxisPlaceStation <> 2) AND (DB_Station.AxisPlaceStation <> 4) AND (DB_Station.AxisPlaceStation <> 5)) THEN
+                DB_Station.FaultMotion := TRUE;
+                DB_Station.FaultActive := TRUE;
+                DB_Station.RunCmd := FALSE;
+                RETURN;
+            ELSE
+                DB_Station.Step := 10;
+            END_IF;
+        END_IF;
+    5:
+        DB_Station.CycleActive := TRUE;
+        DB_Comm.JobBusy := TRUE;
+        DB_Comm.ReadyForJob := FALSE;
+        DB_Station.AxisMoveBusy := TRUE;
+        DB_Station.AxisMoveTowardRight := FALSE;
+        DB_Station.OutDir := TRUE;
+        DB_Station.OutPulse := TRUE;
+
+        IF DB_Station.InHome THEN
+            DB_Station.OutPulse := FALSE;
+            DB_Station.AxisMoveBusy := FALSE;
+            DB_Station.AxisHomed := TRUE;
+            DB_Station.AxisCurrentStation := 0;
+            DB_Station.AxisCurrentPulse := DB_Parm.AxisHomePulse;
+            DB_Station.Step := 0;
+        ELSIF DB_Station.InLeftLimit AND (NOT DB_Station.InHome) THEN
+            DB_Station.OutPulse := FALSE;
+            DB_Station.AxisMoveBusy := FALSE;
+            DB_Station.FaultMotion := TRUE;
+            DB_Station.FaultActive := TRUE;
+            DB_Station.RunCmd := FALSE;
+            RETURN;
+        END_IF;
+    10:
+        DB_Station.CycleActive := TRUE;
+        DB_Comm.JobBusy := TRUE;
+        DB_Comm.ReadyForJob := FALSE;
+        DB_Station.AxisTargetStation := DB_Station.AxisPickStation;
+
+        IF DB_Station.AxisTargetStation = 1 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisFeedPulse;
+        ELSIF DB_Station.AxisTargetStation = 2 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisProcessPulse;
+        ELSIF DB_Station.AxisTargetStation = 4 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisAssemblyPulse;
+        ELSIF DB_Station.AxisTargetStation = 5 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisSortPulse;
+        ELSE
+            DB_Station.FaultMotion := TRUE;
+            DB_Station.FaultActive := TRUE;
+            DB_Station.RunCmd := FALSE;
+            RETURN;
+        END_IF;
+
+        IF DB_Station.AxisTargetPulse = DB_Station.AxisCurrentPulse THEN
+            DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+            DB_Station.AxisMoveBusy := FALSE;
+            DB_Station.OutPulse := FALSE;
+            DB_Station.Step := 20;
+        ELSIF DB_Station.AxisTargetPulse > DB_Station.AxisCurrentPulse THEN
+            DB_Station.AxisMoveBusy := TRUE;
+            DB_Station.AxisMoveTowardRight := TRUE;
+            DB_Station.OutDir := FALSE;
+            DB_Station.OutPulse := TRUE;
+            DB_Station.AxisCurrentPulse := DB_Station.AxisCurrentPulse + DB_Parm.AxisPulsePerCycle;
+
+            IF DB_Station.AxisCurrentPulse >= DB_Station.AxisTargetPulse THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisTargetPulse;
+                DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+                DB_Station.AxisMoveBusy := FALSE;
+                DB_Station.OutPulse := FALSE;
+                DB_Station.Step := 20;
+            END_IF;
+        ELSE
+            DB_Station.AxisMoveBusy := TRUE;
+            DB_Station.AxisMoveTowardRight := FALSE;
+            DB_Station.OutDir := TRUE;
+            DB_Station.OutPulse := TRUE;
+
+            IF DB_Station.AxisCurrentPulse > DB_Parm.AxisPulsePerCycle THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisCurrentPulse - DB_Parm.AxisPulsePerCycle;
+            ELSE
+                DB_Station.AxisCurrentPulse := 0;
+            END_IF;
+
+            IF DB_Station.AxisCurrentPulse <= DB_Station.AxisTargetPulse THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisTargetPulse;
+                DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+                DB_Station.AxisMoveBusy := FALSE;
+                DB_Station.OutPulse := FALSE;
+                DB_Station.Step := 20;
+            END_IF;
+        END_IF;
+    20:
+        DB_Station.OutArmOutValve := TRUE;
+        IF DB_Station.InArmOut THEN
+            DB_Station.Step := 30;
+        END_IF;
+    30:
+        DB_Station.OutLiftValve := FALSE;
+        IF DB_Station.InLiftDown THEN
+            DB_Station.Step := 40;
+        END_IF;
+    40:
+        DB_Station.OutGripValve := TRUE;
+        DB_Station.OutReleaseValve := FALSE;
+        IF DB_Station.InGripOk THEN
+            DB_Station.Step := 50;
+        END_IF;
+    50:
+        DB_Station.OutLiftValve := TRUE;
+        IF DB_Station.InLiftUp THEN
+            DB_Station.Step := 60;
+        END_IF;
+    60:
+        DB_Station.OutArmOutValve := FALSE;
+        IF DB_Station.InArmIn THEN
+            DB_Station.Step := 70;
+        END_IF;
+    70:
+        DB_Station.OutRotLeftValve := DB_Comm.PlaceRotateLeft;
+        DB_Station.OutRotRightValve := NOT DB_Comm.PlaceRotateLeft;
+        IF (DB_Comm.PlaceRotateLeft AND DB_Station.InRotLeft) OR ((NOT DB_Comm.PlaceRotateLeft) AND DB_Station.InRotRight) THEN
+            DB_Station.Step := 80;
+        END_IF;
+    80:
+        DB_Station.CycleActive := TRUE;
+        DB_Comm.JobBusy := TRUE;
+        DB_Comm.ReadyForJob := FALSE;
+        DB_Station.AxisTargetStation := DB_Station.AxisPlaceStation;
+
+        IF DB_Station.AxisTargetStation = 1 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisFeedPulse;
+        ELSIF DB_Station.AxisTargetStation = 2 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisProcessPulse;
+        ELSIF DB_Station.AxisTargetStation = 4 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisAssemblyPulse;
+        ELSIF DB_Station.AxisTargetStation = 5 THEN
+            DB_Station.AxisTargetPulse := DB_Parm.AxisSortPulse;
+        ELSE
+            DB_Station.FaultMotion := TRUE;
+            DB_Station.FaultActive := TRUE;
+            DB_Station.RunCmd := FALSE;
+            RETURN;
+        END_IF;
+
+        IF DB_Station.AxisTargetPulse = DB_Station.AxisCurrentPulse THEN
+            DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+            DB_Station.AxisMoveBusy := FALSE;
+            DB_Station.OutPulse := FALSE;
+            DB_Station.Step := 90;
+        ELSIF DB_Station.AxisTargetPulse > DB_Station.AxisCurrentPulse THEN
+            DB_Station.AxisMoveBusy := TRUE;
+            DB_Station.AxisMoveTowardRight := TRUE;
+            DB_Station.OutDir := FALSE;
+            DB_Station.OutPulse := TRUE;
+            DB_Station.AxisCurrentPulse := DB_Station.AxisCurrentPulse + DB_Parm.AxisPulsePerCycle;
+
+            IF DB_Station.AxisCurrentPulse >= DB_Station.AxisTargetPulse THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisTargetPulse;
+                DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+                DB_Station.AxisMoveBusy := FALSE;
+                DB_Station.OutPulse := FALSE;
+                DB_Station.Step := 90;
+            END_IF;
+        ELSE
+            DB_Station.AxisMoveBusy := TRUE;
+            DB_Station.AxisMoveTowardRight := FALSE;
+            DB_Station.OutDir := TRUE;
+            DB_Station.OutPulse := TRUE;
+
+            IF DB_Station.AxisCurrentPulse > DB_Parm.AxisPulsePerCycle THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisCurrentPulse - DB_Parm.AxisPulsePerCycle;
+            ELSE
+                DB_Station.AxisCurrentPulse := 0;
+            END_IF;
+
+            IF DB_Station.AxisCurrentPulse <= DB_Station.AxisTargetPulse THEN
+                DB_Station.AxisCurrentPulse := DB_Station.AxisTargetPulse;
+                DB_Station.AxisCurrentStation := DB_Station.AxisTargetStation;
+                DB_Station.AxisMoveBusy := FALSE;
+                DB_Station.OutPulse := FALSE;
+                DB_Station.Step := 90;
+            END_IF;
+        END_IF;
+    90:
+        DB_Station.OutArmOutValve := TRUE;
+        IF DB_Station.InArmOut THEN
+            DB_Station.Step := 100;
+        END_IF;
+    100:
+        DB_Station.OutLiftValve := FALSE;
+        IF DB_Station.InLiftDown THEN
+            DB_Station.Step := 110;
+        END_IF;
+    110:
+        DB_Station.OutGripValve := FALSE;
+        DB_Station.OutReleaseValve := TRUE;
+        DB_Station.Step := 120;
+    120:
+        DB_Station.OutLiftValve := TRUE;
+        DB_Station.OutArmOutValve := FALSE;
+        IF DB_Station.InLiftUp AND DB_Station.InArmIn THEN
+            DB_Station.OutPulse := FALSE;
+            DB_Station.AxisMoveBusy := FALSE;
+            DB_Station.Step := 130;
+        END_IF;
+    130:
+        DB_Station.CycleActive := FALSE;
+        DB_Station.StationDone := TRUE;
+        DB_Comm.JobBusy := FALSE;
+        DB_Comm.JobDone := TRUE;
+        DB_Comm.ReadyForJob := FALSE;
+        IF NOT DB_Comm.TransferJob THEN
+            DB_Comm.JobDone := FALSE;
+            DB_Station.StationDone := FALSE;
+            DB_Station.AxisTargetStation := 0;
+            DB_Station.AxisPickStation := 0;
+            DB_Station.AxisPlaceStation := 0;
+            DB_Station.Step := 0;
+        END_IF;
+ELSE
+    DB_Station.Step := 0;
+END_CASE;

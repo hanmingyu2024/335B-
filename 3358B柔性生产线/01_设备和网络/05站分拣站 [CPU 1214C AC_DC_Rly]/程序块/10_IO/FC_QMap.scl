@@ -1,0 +1,9 @@
+// FC_QMap - Station 05
+%Q0.0 := DB_Station.OutMotorRun;
+%Q0.2 := DB_Station.OutPusher1;
+%Q0.3 := DB_Station.OutPusher2;
+%Q0.4 := DB_Station.OutPusher3;
+%Q0.7 := DB_Station.LampCmdYellow;
+%Q1.0 := DB_Station.LampCmdGreen;
+%Q1.1 := DB_Station.LampCmdRed;
+%QW80 := DB_Station.AnalogCmd;

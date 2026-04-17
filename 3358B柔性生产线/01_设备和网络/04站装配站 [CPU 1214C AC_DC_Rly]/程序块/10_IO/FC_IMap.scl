@@ -1,0 +1,21 @@
+// FC_IMap - Station 04
+DB_Station.InPartLow := %I0.0;
+DB_Station.InPartPresent := %I0.1;
+DB_Station.InTrayLeft := %I0.2;
+DB_Station.InTrayRight := %I0.3;
+DB_Station.InAsmPartAtPos := %I0.4;
+DB_Station.InTopFwd := %I0.5;
+DB_Station.InTopBwd := %I0.6;
+DB_Station.InStopperOk := %I0.7;
+DB_Station.InDropOk := %I1.0;
+DB_Station.InSwingLeft := %I1.1;
+DB_Station.InSwingRight := %I1.2;
+DB_Station.InGripOk := %I1.3;
+DB_Station.InHandDown := %I1.4;
+DB_Station.InHandUp := %I1.5;
+DB_Station.InArmIn := %I2.0;
+DB_Station.InArmOut := %I2.1;
+DB_Station.PB_Stop := %I2.4;
+DB_Station.PB_Start := %I2.5;
+DB_Station.PB_EStop := %I2.6;
+DB_Station.SelSingle := %I2.7;

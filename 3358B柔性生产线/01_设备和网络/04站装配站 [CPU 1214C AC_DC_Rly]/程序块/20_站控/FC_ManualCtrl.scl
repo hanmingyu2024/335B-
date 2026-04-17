@@ -1,0 +1,9 @@
+// FC_ManualCtrl - Station 04
+DB_Station.CycleActive := FALSE;
+DB_Station.StationDone := FALSE;
+DB_Station.OutStopperValve := DB_Station.ManStopper AND DB_Station.EnableManual;
+DB_Station.OutTopValve := DB_Station.ManTopValve AND DB_Station.EnableManual;
+DB_Station.OutRotateValve := DB_Station.ManRotate AND DB_Station.EnableManual;
+DB_Station.OutGripValve := DB_Station.ManGripClamp AND DB_Station.EnableManual;
+DB_Station.OutHandDownValve := DB_Station.ManHandDown AND DB_Station.EnableManual;
+DB_Station.OutArmOutValve := DB_Station.ManArmOut AND DB_Station.EnableManual;

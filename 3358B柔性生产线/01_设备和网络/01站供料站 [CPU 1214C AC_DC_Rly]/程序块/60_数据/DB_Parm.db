@@ -1,0 +1,14 @@
+DATA_BLOCK "DB_Parm"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+
+      StationNo : Int := 1;
+      tTopExtend : Time := T#800MS;
+      tPushExtend : Time := T#800MS;
+      tOutPosWait : Time := T#1S;
+      tAlarmDelay : Time := T#2S;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

@@ -1,0 +1,13 @@
+// FC_IMap - Station 01
+DB_Station.InTopFwd := %I0.0;
+DB_Station.InTopBwd := %I0.1;
+DB_Station.InPushFwd := %I0.2;
+DB_Station.InPushBwd := %I0.3;
+DB_Station.InOutPos := %I0.4;
+DB_Station.InSupplyLow := %I0.5;
+DB_Station.InNoPart := %I0.6;
+DB_Station.InMetalOk := %I0.7;
+DB_Station.PB_Stop := %I1.2;
+DB_Station.PB_Start := %I1.3;
+DB_Station.PB_EStop := %I1.4;
+DB_Station.SelSingle := %I1.5;

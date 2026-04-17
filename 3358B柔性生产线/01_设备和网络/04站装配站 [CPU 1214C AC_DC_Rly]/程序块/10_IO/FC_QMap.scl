@@ -1,0 +1,10 @@
+// FC_QMap - Station 04
+%Q0.0 := DB_Station.OutStopperValve;
+%Q0.1 := DB_Station.OutTopValve;
+%Q0.2 := DB_Station.OutRotateValve;
+%Q0.3 := DB_Station.OutGripValve;
+%Q0.4 := DB_Station.OutHandDownValve;
+%Q0.5 := DB_Station.OutArmOutValve;
+%Q0.6 := DB_Station.LampCmdRed;
+%Q0.7 := DB_Station.LampCmdYellow;
+%Q1.0 := DB_Station.LampCmdGreen;

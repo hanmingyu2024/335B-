@@ -1,0 +1,345 @@
+{
+  "project": {
+    "code": "STD_FLEX_LINE_DEMO",
+    "name": "Standard Flexible Line Template Demo",
+    "version": "V1.0.0",
+    "tiaVersion": "V17",
+    "includeHmi": true,
+    "lineControlStation": "Station01"
+  },
+  "network": {
+    "subnetName": "PN_LINE_1",
+    "subnetTypeIdentifier": "System:Subnet.Ethernet",
+    "subnetMask": "255.255.255.0",
+    "useRouter": false,
+    "routerAddress": "",
+    "ipProtocolSelection": "Project"
+  },
+  "projectStages": [
+    {
+      "id": 1,
+      "name": "IO Mapping",
+      "deliverable": "I/O list and hardware address allocation"
+    },
+    {
+      "id": 2,
+      "name": "Process Flow",
+      "deliverable": "Process sequence and inter-station handshakes"
+    },
+    {
+      "id": 3,
+      "name": "Device Modeling",
+      "deliverable": "CPU model and station device abstraction"
+    },
+    {
+      "id": 4,
+      "name": "Scaffold Build",
+      "deliverable": "Standard directory and source skeleton"
+    },
+    {
+      "id": 5,
+      "name": "Programming",
+      "deliverable": "Station control, device and communication logic"
+    },
+    {
+      "id": 6,
+      "name": "Commissioning",
+      "deliverable": "Compile logs and debug records"
+    },
+    {
+      "id": 7,
+      "name": "Optimization",
+      "deliverable": "Template hardening and version iteration"
+    }
+  ],
+  "processFlow": [
+    {
+      "from": "Station01",
+      "to": "Station03",
+      "description": "Supply station hands off part to transfer station"
+    },
+    {
+      "from": "Station03",
+      "to": "Station02",
+      "description": "Transfer station places part to process station"
+    },
+    {
+      "from": "Station02",
+      "to": "Station03",
+      "description": "Process station returns finished part to transfer station"
+    },
+    {
+      "from": "Station03",
+      "to": "Station04",
+      "description": "Transfer station places part to assembly station"
+    },
+    {
+      "from": "Station04",
+      "to": "Station03",
+      "description": "Assembly station returns assembled part to transfer station"
+    },
+    {
+      "from": "Station03",
+      "to": "Station05",
+      "description": "Transfer station sends part to sorting station"
+    }
+  ],
+  "commSignals": [
+    {
+      "name": "CmdAuto",
+      "direction": "LineToStation",
+      "description": "Auto mode command"
+    },
+    {
+      "name": "CmdStart",
+      "direction": "LineToStation",
+      "description": "Start command"
+    },
+    {
+      "name": "CmdStop",
+      "direction": "LineToStation",
+      "description": "Stop command"
+    },
+    {
+      "name": "CmdReset",
+      "direction": "LineToStation",
+      "description": "Fault reset command"
+    },
+    {
+      "name": "StsReady",
+      "direction": "StationToLine",
+      "description": "Station ready status"
+    },
+    {
+      "name": "StsBusy",
+      "direction": "StationToLine",
+      "description": "Station busy status"
+    },
+    {
+      "name": "StsDone",
+      "direction": "StationToLine",
+      "description": "Cycle done status"
+    },
+    {
+      "name": "StsFault",
+      "direction": "StationToLine",
+      "description": "Fault status"
+    },
+    {
+      "name": "ReqOut",
+      "direction": "StationToStation",
+      "description": "Request to output part"
+    },
+    {
+      "name": "PartReady",
+      "direction": "StationToStation",
+      "description": "Part ready for pickup"
+    },
+    {
+      "name": "AllowTake",
+      "direction": "StationToStation",
+      "description": "Allow pickup"
+    },
+    {
+      "name": "TakeDone",
+      "direction": "StationToStation",
+      "description": "Pickup done"
+    },
+    {
+      "name": "ReqIn",
+      "direction": "StationToStation",
+      "description": "Request to input part"
+    },
+    {
+      "name": "AllowIn",
+      "direction": "StationToStation",
+      "description": "Allow part input"
+    },
+    {
+      "name": "PlaceDone",
+      "direction": "StationToStation",
+      "description": "Place done"
+    },
+    {
+      "name": "PartReceived",
+      "direction": "StationToStation",
+      "description": "Part receive acknowledge"
+    },
+    {
+      "name": "ProcessDone",
+      "direction": "StationToStation",
+      "description": "Process done"
+    },
+    {
+      "name": "DoneAck",
+      "direction": "StationToStation",
+      "description": "Done acknowledge"
+    }
+  ],
+  "alarmBands": [
+    {
+      "station": "Station01",
+      "start": 1000,
+      "end": 1999
+    },
+    {
+      "station": "Station02",
+      "start": 2000,
+      "end": 2999
+    },
+    {
+      "station": "Station03",
+      "start": 3000,
+      "end": 3999
+    },
+    {
+      "station": "Station04",
+      "start": 4000,
+      "end": 4999
+    },
+    {
+      "station": "Station05",
+      "start": 5000,
+      "end": 5999
+    },
+    {
+      "station": "LineCommon",
+      "start": 9000,
+      "end": 9999
+    }
+  ],
+  "stations": [
+    {
+      "key": "Station01",
+      "stationNumber": 1,
+      "displayName": "01 Supply",
+      "role": "Supply",
+      "folderName": "01_Station_Supply [CPU 1214C AC_DC_Rly]",
+      "deviceName": "STD_Station01_Supply",
+      "deviceItemName": "PLC_01",
+      "cpuTypeIdentifier": "OrderNumber:6ES7 214-1BG40-0XB0/V4.5",
+      "hasLineControl": true,
+      "deviceTemplates": [
+        "Cylinder",
+        "Motor",
+        "Conveyor",
+        "Sensor"
+      ],
+      "network": {
+        "ipAddress": "192.168.10.11",
+        "pnDeviceName": "std-line-st01-plc",
+        "interfaceOperatingMode": "IoController",
+        "autoGeneratePnDeviceName": false
+      },
+      "io": {
+        "inputs": 12,
+        "outputs": 5
+      }
+    },
+    {
+      "key": "Station02",
+      "stationNumber": 2,
+      "displayName": "02 Process",
+      "role": "Process",
+      "folderName": "02_Station_Process [CPU 1214C AC_DC_Rly]",
+      "deviceName": "STD_Station02_Process",
+      "deviceItemName": "PLC_02",
+      "cpuTypeIdentifier": "OrderNumber:6ES7 214-1BG40-0XB0/V4.5",
+      "hasLineControl": false,
+      "deviceTemplates": [
+        "Cylinder",
+        "Motor",
+        "Sensor"
+      ],
+      "network": {
+        "ipAddress": "192.168.10.12",
+        "pnDeviceName": "std-line-st02-plc",
+        "interfaceOperatingMode": "IoController",
+        "autoGeneratePnDeviceName": false
+      },
+      "io": {
+        "inputs": 10,
+        "outputs": 6
+      }
+    },
+    {
+      "key": "Station03",
+      "stationNumber": 3,
+      "displayName": "03 Transfer",
+      "role": "Transfer",
+      "folderName": "03_Station_Transfer [CPU 1214C DC_DC_DC]",
+      "deviceName": "STD_Station03_Transfer",
+      "deviceItemName": "PLC_03",
+      "cpuTypeIdentifier": "OrderNumber:6ES7 214-1AG40-0XB0/V4.5",
+      "hasLineControl": false,
+      "deviceTemplates": [
+        "Conveyor",
+        "Motor",
+        "Cylinder",
+        "Sensor"
+      ],
+      "network": {
+        "ipAddress": "192.168.10.13",
+        "pnDeviceName": "std-line-st03-plc",
+        "interfaceOperatingMode": "IoController",
+        "autoGeneratePnDeviceName": false
+      },
+      "io": {
+        "inputs": 15,
+        "outputs": 11
+      }
+    },
+    {
+      "key": "Station04",
+      "stationNumber": 4,
+      "displayName": "04 Assemble",
+      "role": "Assemble",
+      "folderName": "04_Station_Assemble [CPU 1214C AC_DC_Rly]",
+      "deviceName": "STD_Station04_Assemble",
+      "deviceItemName": "PLC_04",
+      "cpuTypeIdentifier": "OrderNumber:6ES7 214-1BG40-0XB0/V4.5",
+      "hasLineControl": false,
+      "deviceTemplates": [
+        "Cylinder",
+        "Motor",
+        "Sensor"
+      ],
+      "network": {
+        "ipAddress": "192.168.10.14",
+        "pnDeviceName": "std-line-st04-plc",
+        "interfaceOperatingMode": "IoController",
+        "autoGeneratePnDeviceName": false
+      },
+      "io": {
+        "inputs": 20,
+        "outputs": 12
+      }
+    },
+    {
+      "key": "Station05",
+      "stationNumber": 5,
+      "displayName": "05 Sort",
+      "role": "Sort",
+      "folderName": "05_Station_Sort [CPU 1214C AC_DC_Rly]",
+      "deviceName": "STD_Station05_Sort",
+      "deviceItemName": "PLC_05",
+      "cpuTypeIdentifier": "OrderNumber:6ES7 214-1BG40-0XB0/V4.5",
+      "hasLineControl": false,
+      "deviceTemplates": [
+        "Cylinder",
+        "Conveyor",
+        "Sensor"
+      ],
+      "network": {
+        "ipAddress": "192.168.10.15",
+        "pnDeviceName": "std-line-st05-plc",
+        "interfaceOperatingMode": "IoController",
+        "autoGeneratePnDeviceName": false
+      },
+      "io": {
+        "inputs": 13,
+        "outputs": 8
+      }
+    }
+  ]
+}

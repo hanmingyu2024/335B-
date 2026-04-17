@@ -1,0 +1,398 @@
+// FB_LineCtrl
+// 01 station line coordinator. DB_Link_S02..S05 are remote station communication shadows.
+// PickAtLeft/PlaceAtLeft are abstract shuttle-side flags and must be mapped to real motion positions in TIA.
+
+DB_Comm.CmdAuto := DB_Line.CmdAuto;
+DB_Comm.CmdStart := DB_Line.CmdStart;
+DB_Comm.CmdStop := DB_Line.CmdStop;
+DB_Comm.CmdReset := DB_Line.CmdReset;
+
+DB_Link_S02.CmdAuto := DB_Line.CmdAuto;
+DB_Link_S02.CmdStart := DB_Line.CmdStart;
+DB_Link_S02.CmdStop := DB_Line.CmdStop;
+DB_Link_S02.CmdReset := DB_Line.CmdReset;
+
+DB_Link_S03.CmdAuto := DB_Line.CmdAuto;
+DB_Link_S03.CmdStart := DB_Line.CmdStart;
+DB_Link_S03.CmdStop := DB_Line.CmdStop;
+DB_Link_S03.CmdReset := DB_Line.CmdReset;
+
+DB_Link_S04.CmdAuto := DB_Line.CmdAuto;
+DB_Link_S04.CmdStart := DB_Line.CmdStart;
+DB_Link_S04.CmdStop := DB_Line.CmdStop;
+DB_Link_S04.CmdReset := DB_Line.CmdReset;
+
+DB_Link_S05.CmdAuto := DB_Line.CmdAuto;
+DB_Link_S05.CmdStart := DB_Line.CmdStart;
+DB_Link_S05.CmdStop := DB_Line.CmdStop;
+DB_Link_S05.CmdReset := DB_Line.CmdReset;
+
+DB_Link_S02.HeartbeatTx := NOT DB_Link_S02.HeartbeatTx;
+DB_Link_S03.HeartbeatTx := NOT DB_Link_S03.HeartbeatTx;
+DB_Link_S04.HeartbeatTx := NOT DB_Link_S04.HeartbeatTx;
+DB_Link_S05.HeartbeatTx := NOT DB_Link_S05.HeartbeatTx;
+
+IF DB_Link_S02.HeartbeatRx <> DB_Link_S02.HeartbeatRxLast THEN
+    DB_Link_S02.HeartbeatRxLast := DB_Link_S02.HeartbeatRx;
+    DB_Link_S02.HeartbeatWatchdog := 0;
+    DB_Link_S02.PeerAlive := TRUE;
+ELSIF DB_Link_S02.HeartbeatWatchdog < DB_Link_S02.HeartbeatLimit THEN
+    DB_Link_S02.HeartbeatWatchdog := DB_Link_S02.HeartbeatWatchdog + 1;
+ELSE
+    DB_Link_S02.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S02.HeartbeatWatchdog >= DB_Link_S02.HeartbeatLimit THEN
+    DB_Link_S02.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S03.HeartbeatRx <> DB_Link_S03.HeartbeatRxLast THEN
+    DB_Link_S03.HeartbeatRxLast := DB_Link_S03.HeartbeatRx;
+    DB_Link_S03.HeartbeatWatchdog := 0;
+    DB_Link_S03.PeerAlive := TRUE;
+ELSIF DB_Link_S03.HeartbeatWatchdog < DB_Link_S03.HeartbeatLimit THEN
+    DB_Link_S03.HeartbeatWatchdog := DB_Link_S03.HeartbeatWatchdog + 1;
+ELSE
+    DB_Link_S03.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S03.HeartbeatWatchdog >= DB_Link_S03.HeartbeatLimit THEN
+    DB_Link_S03.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S04.HeartbeatRx <> DB_Link_S04.HeartbeatRxLast THEN
+    DB_Link_S04.HeartbeatRxLast := DB_Link_S04.HeartbeatRx;
+    DB_Link_S04.HeartbeatWatchdog := 0;
+    DB_Link_S04.PeerAlive := TRUE;
+ELSIF DB_Link_S04.HeartbeatWatchdog < DB_Link_S04.HeartbeatLimit THEN
+    DB_Link_S04.HeartbeatWatchdog := DB_Link_S04.HeartbeatWatchdog + 1;
+ELSE
+    DB_Link_S04.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S04.HeartbeatWatchdog >= DB_Link_S04.HeartbeatLimit THEN
+    DB_Link_S04.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S05.HeartbeatRx <> DB_Link_S05.HeartbeatRxLast THEN
+    DB_Link_S05.HeartbeatRxLast := DB_Link_S05.HeartbeatRx;
+    DB_Link_S05.HeartbeatWatchdog := 0;
+    DB_Link_S05.PeerAlive := TRUE;
+ELSIF DB_Link_S05.HeartbeatWatchdog < DB_Link_S05.HeartbeatLimit THEN
+    DB_Link_S05.HeartbeatWatchdog := DB_Link_S05.HeartbeatWatchdog + 1;
+ELSE
+    DB_Link_S05.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Link_S05.HeartbeatWatchdog >= DB_Link_S05.HeartbeatLimit THEN
+    DB_Link_S05.PeerAlive := FALSE;
+END_IF;
+
+DB_Line.StsFault :=
+    DB_Comm.StsFault
+    OR DB_Link_S02.StsFault
+    OR DB_Link_S03.StsFault
+    OR DB_Link_S04.StsFault
+    OR DB_Link_S05.StsFault
+    OR (
+        (DB_Line.CmdAuto OR DB_Line.StsRun OR DB_Line.CycleActive)
+        AND (
+            (NOT DB_Link_S02.PeerAlive)
+            OR (NOT DB_Link_S03.PeerAlive)
+            OR (NOT DB_Link_S04.PeerAlive)
+            OR (NOT DB_Link_S05.PeerAlive)
+        )
+    );
+
+DB_Line.StsReady :=
+    DB_Comm.StsReady
+    AND DB_Link_S02.PeerAlive
+    AND DB_Link_S02.StsReady
+    AND DB_Link_S03.PeerAlive
+    AND DB_Link_S03.StsReady
+    AND DB_Link_S04.PeerAlive
+    AND DB_Link_S04.StsReady
+    AND DB_Link_S05.PeerAlive
+    AND DB_Link_S05.StsReady
+    AND (NOT DB_Line.StsFault);
+
+DB_Line.FaultCode := W#16#0;
+IF (DB_Line.CmdAuto OR DB_Line.StsRun OR DB_Line.CycleActive) AND (NOT DB_Link_S02.PeerAlive) THEN
+    DB_Line.FaultCode := W#16#0202;
+ELSIF (DB_Line.CmdAuto OR DB_Line.StsRun OR DB_Line.CycleActive) AND (NOT DB_Link_S03.PeerAlive) THEN
+    DB_Line.FaultCode := W#16#0203;
+ELSIF (DB_Line.CmdAuto OR DB_Line.StsRun OR DB_Line.CycleActive) AND (NOT DB_Link_S04.PeerAlive) THEN
+    DB_Line.FaultCode := W#16#0204;
+ELSIF (DB_Line.CmdAuto OR DB_Line.StsRun OR DB_Line.CycleActive) AND (NOT DB_Link_S05.PeerAlive) THEN
+    DB_Line.FaultCode := W#16#0205;
+ELSIF DB_Comm.StsFault THEN
+    DB_Line.FaultCode := W#16#0101;
+ELSIF DB_Link_S02.StsFault THEN
+    DB_Line.FaultCode := W#16#0102;
+ELSIF DB_Link_S03.StsFault THEN
+    DB_Line.FaultCode := W#16#0103;
+ELSIF DB_Link_S04.StsFault THEN
+    DB_Line.FaultCode := W#16#0104;
+ELSIF DB_Link_S05.StsFault THEN
+    DB_Line.FaultCode := W#16#0105;
+END_IF;
+
+IF DB_Line.CmdReset THEN
+    DB_Line.Step := 0;
+    DB_Line.CycleActive := FALSE;
+    DB_Line.StsRun := FALSE;
+    DB_Line.StsPaused := FALSE;
+    DB_Line.ActiveSource := 0;
+    DB_Line.ActiveTarget := 0;
+
+    DB_Comm.AllowTake := FALSE;
+    DB_Comm.TakeDone := FALSE;
+
+    DB_Link_S02.ReqIn := FALSE;
+    DB_Link_S02.PlaceDone := FALSE;
+    DB_Link_S02.AllowTake := FALSE;
+    DB_Link_S02.TakeDone := FALSE;
+    DB_Link_S02.HeartbeatRxLast := DB_Link_S02.HeartbeatRx;
+    DB_Link_S02.HeartbeatWatchdog := 0;
+    DB_Link_S02.PeerAlive := FALSE;
+
+    DB_Link_S03.TransferJob := FALSE;
+    DB_Link_S03.JobAbort := FALSE;
+    DB_Link_S03.JobSource := 0;
+    DB_Link_S03.JobTarget := 0;
+    DB_Link_S03.PickAtLeft := FALSE;
+    DB_Link_S03.PlaceAtLeft := FALSE;
+    DB_Link_S03.PlaceRotateLeft := FALSE;
+    DB_Link_S03.HeartbeatRxLast := DB_Link_S03.HeartbeatRx;
+    DB_Link_S03.HeartbeatWatchdog := 0;
+    DB_Link_S03.PeerAlive := FALSE;
+
+    DB_Link_S04.ReqIn := FALSE;
+    DB_Link_S04.PlaceDone := FALSE;
+    DB_Link_S04.AllowTake := FALSE;
+    DB_Link_S04.TakeDone := FALSE;
+    DB_Link_S04.HeartbeatRxLast := DB_Link_S04.HeartbeatRx;
+    DB_Link_S04.HeartbeatWatchdog := 0;
+    DB_Link_S04.PeerAlive := FALSE;
+
+    DB_Link_S05.ReqIn := FALSE;
+    DB_Link_S05.PlaceDone := FALSE;
+    DB_Link_S05.DoneAck := FALSE;
+    DB_Link_S05.HeartbeatRxLast := DB_Link_S05.HeartbeatRx;
+    DB_Link_S05.HeartbeatWatchdog := 0;
+    DB_Link_S05.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Line.CmdStop OR DB_Line.StsFault THEN
+    DB_Line.CycleActive := FALSE;
+    DB_Line.StsRun := FALSE;
+    DB_Line.StsPaused := DB_Line.Step <> 0;
+    DB_Line.Step := 0;
+    DB_Line.ActiveSource := 0;
+    DB_Line.ActiveTarget := 0;
+
+    DB_Comm.AllowTake := FALSE;
+    DB_Comm.TakeDone := FALSE;
+
+    DB_Link_S02.ReqIn := FALSE;
+    DB_Link_S02.PlaceDone := FALSE;
+    DB_Link_S02.AllowTake := FALSE;
+    DB_Link_S02.TakeDone := FALSE;
+
+    DB_Link_S03.TransferJob := FALSE;
+    DB_Link_S03.JobAbort := DB_Line.StsFault;
+    DB_Link_S03.JobSource := 0;
+    DB_Link_S03.JobTarget := 0;
+    DB_Link_S03.PickAtLeft := FALSE;
+    DB_Link_S03.PlaceAtLeft := FALSE;
+    DB_Link_S03.PlaceRotateLeft := FALSE;
+
+    DB_Link_S04.ReqIn := FALSE;
+    DB_Link_S04.PlaceDone := FALSE;
+    DB_Link_S04.AllowTake := FALSE;
+    DB_Link_S04.TakeDone := FALSE;
+
+    DB_Link_S05.ReqIn := FALSE;
+    DB_Link_S05.PlaceDone := FALSE;
+    DB_Link_S05.DoneAck := FALSE;
+ELSE
+    DB_Link_S03.JobAbort := FALSE;
+END_IF;
+
+CASE DB_Line.Step OF
+    0:
+        DB_Line.CycleActive := FALSE;
+        DB_Line.StsRun := FALSE;
+        DB_Line.StsPaused := FALSE;
+        DB_Line.ActiveSource := 0;
+        DB_Line.ActiveTarget := 0;
+
+        DB_Comm.AllowTake := FALSE;
+        DB_Comm.TakeDone := FALSE;
+
+        DB_Link_S02.ReqIn := FALSE;
+        DB_Link_S02.PlaceDone := FALSE;
+        DB_Link_S02.AllowTake := FALSE;
+        DB_Link_S02.TakeDone := FALSE;
+
+        DB_Link_S04.ReqIn := FALSE;
+        DB_Link_S04.PlaceDone := FALSE;
+        DB_Link_S04.AllowTake := FALSE;
+        DB_Link_S04.TakeDone := FALSE;
+
+        DB_Link_S05.ReqIn := FALSE;
+        DB_Link_S05.PlaceDone := FALSE;
+        DB_Link_S05.DoneAck := FALSE;
+
+        DB_Link_S03.TransferJob := FALSE;
+
+        IF DB_Line.CmdAuto AND DB_Line.CmdStart AND DB_Line.StsReady AND (NOT DB_Line.StsFault) THEN
+            DB_Line.CycleActive := TRUE;
+            DB_Line.StsRun := TRUE;
+            DB_Line.CurrentCycle := DB_Line.CurrentCycle + 1;
+            DB_Line.Step := 10;
+        END_IF;
+    10:
+        DB_Line.CycleActive := TRUE;
+        DB_Line.StsRun := TRUE;
+        DB_Line.ActiveSource := 1;
+        DB_Line.ActiveTarget := 2;
+        DB_Link_S02.ReqIn := TRUE;
+
+        IF DB_Comm.ReqOut
+            AND DB_Comm.PartReady
+            AND DB_Link_S02.AllowIn
+            AND DB_Link_S03.ReadyForJob
+            AND (NOT DB_Link_S03.JobBusy)
+            AND (NOT DB_Link_S03.JobDone) THEN
+            DB_Comm.AllowTake := TRUE;
+            DB_Link_S03.TransferJob := TRUE;
+            DB_Link_S03.JobSource := 1;
+            DB_Link_S03.JobTarget := 2;
+            DB_Link_S03.PickAtLeft := TRUE;
+            DB_Link_S03.PlaceAtLeft := FALSE;
+            DB_Link_S03.PlaceRotateLeft := FALSE;
+            DB_Line.Step := 20;
+        END_IF;
+    20:
+        DB_Line.ActiveSource := 1;
+        DB_Line.ActiveTarget := 2;
+
+        IF DB_Link_S03.JobDone THEN
+            DB_Link_S03.TransferJob := FALSE;
+            DB_Comm.AllowTake := FALSE;
+            DB_Comm.TakeDone := TRUE;
+            DB_Link_S02.PlaceDone := TRUE;
+
+            IF (NOT DB_Comm.PartReady) AND DB_Link_S02.PartReceived THEN
+                DB_Comm.TakeDone := FALSE;
+                DB_Link_S02.PlaceDone := FALSE;
+                DB_Link_S02.ReqIn := FALSE;
+                DB_Line.Step := 30;
+            END_IF;
+        END_IF;
+    30:
+        DB_Line.ActiveSource := 2;
+        DB_Line.ActiveTarget := 0;
+
+        IF DB_Link_S02.ProcessDone AND DB_Link_S02.ReqOut THEN
+            DB_Line.Step := 40;
+        END_IF;
+    40:
+        DB_Line.ActiveSource := 2;
+        DB_Line.ActiveTarget := 4;
+        DB_Link_S04.ReqIn := TRUE;
+
+        IF DB_Link_S02.ReqOut
+            AND DB_Link_S02.PartReady
+            AND DB_Link_S04.AllowIn
+            AND DB_Link_S03.ReadyForJob
+            AND (NOT DB_Link_S03.JobBusy)
+            AND (NOT DB_Link_S03.JobDone) THEN
+            DB_Link_S02.AllowTake := TRUE;
+            DB_Link_S03.TransferJob := TRUE;
+            DB_Link_S03.JobSource := 2;
+            DB_Link_S03.JobTarget := 4;
+            DB_Link_S03.PickAtLeft := FALSE;
+            DB_Link_S03.PlaceAtLeft := TRUE;
+            DB_Link_S03.PlaceRotateLeft := TRUE;
+            DB_Line.Step := 50;
+        END_IF;
+    50:
+        DB_Line.ActiveSource := 2;
+        DB_Line.ActiveTarget := 4;
+
+        IF DB_Link_S03.JobDone THEN
+            DB_Link_S03.TransferJob := FALSE;
+            DB_Link_S02.AllowTake := FALSE;
+            DB_Link_S02.TakeDone := TRUE;
+            DB_Link_S04.PlaceDone := TRUE;
+
+            IF (NOT DB_Link_S02.PartReady) AND DB_Link_S04.PartReceived THEN
+                DB_Link_S02.TakeDone := FALSE;
+                DB_Link_S04.PlaceDone := FALSE;
+                DB_Link_S04.ReqIn := FALSE;
+                DB_Line.Step := 60;
+            END_IF;
+        END_IF;
+    60:
+        DB_Line.ActiveSource := 4;
+        DB_Line.ActiveTarget := 0;
+
+        IF DB_Link_S04.ProcessDone AND DB_Link_S04.ReqOut THEN
+            DB_Line.Step := 70;
+        END_IF;
+    70:
+        DB_Line.ActiveSource := 4;
+        DB_Line.ActiveTarget := 5;
+        DB_Link_S05.ReqIn := TRUE;
+
+        IF DB_Link_S04.ReqOut
+            AND DB_Link_S04.PartReady
+            AND DB_Link_S05.AllowIn
+            AND DB_Link_S03.ReadyForJob
+            AND (NOT DB_Link_S03.JobBusy)
+            AND (NOT DB_Link_S03.JobDone) THEN
+            DB_Link_S04.AllowTake := TRUE;
+            DB_Link_S03.TransferJob := TRUE;
+            DB_Link_S03.JobSource := 4;
+            DB_Link_S03.JobTarget := 5;
+            DB_Link_S03.PickAtLeft := TRUE;
+            DB_Link_S03.PlaceAtLeft := FALSE;
+            DB_Link_S03.PlaceRotateLeft := FALSE;
+            DB_Line.Step := 80;
+        END_IF;
+    80:
+        DB_Line.ActiveSource := 4;
+        DB_Line.ActiveTarget := 5;
+
+        IF DB_Link_S03.JobDone THEN
+            DB_Link_S03.TransferJob := FALSE;
+            DB_Link_S04.AllowTake := FALSE;
+            DB_Link_S04.TakeDone := TRUE;
+            DB_Link_S05.PlaceDone := TRUE;
+
+            IF (NOT DB_Link_S04.PartReady) AND DB_Link_S05.PartReceived THEN
+                DB_Link_S04.TakeDone := FALSE;
+                DB_Link_S05.PlaceDone := FALSE;
+                DB_Link_S05.ReqIn := FALSE;
+                DB_Line.Step := 90;
+            END_IF;
+        END_IF;
+    90:
+        DB_Line.ActiveSource := 5;
+        DB_Line.ActiveTarget := 0;
+
+        IF DB_Link_S05.ProcessDone THEN
+            DB_Link_S05.DoneAck := TRUE;
+        END_IF;
+
+        IF DB_Link_S05.DoneAck AND (NOT DB_Link_S05.ProcessDone) THEN
+            DB_Link_S05.DoneAck := FALSE;
+            DB_Line.TotalCount := DB_Line.TotalCount + 1;
+            DB_Line.CurrentCycle := DB_Line.CurrentCycle + 1;
+            DB_Line.Step := 10;
+        END_IF;
+ELSE
+    DB_Line.Step := 0;
+END_CASE;

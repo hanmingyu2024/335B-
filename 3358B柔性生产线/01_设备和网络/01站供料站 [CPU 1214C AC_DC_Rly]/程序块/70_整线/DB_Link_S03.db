@@ -1,0 +1,43 @@
+DATA_BLOCK "DB_Link_S03"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.2
+NON_RETAIN
+   VAR
+      CmdAuto : Bool := FALSE;
+      CmdStart : Bool := FALSE;
+      CmdStop : Bool := FALSE;
+      CmdReset : Bool := FALSE;
+      HeartbeatTx : Bool := FALSE;
+      HeartbeatRx : Bool := FALSE;
+      HeartbeatRxLast : Bool := FALSE;
+      HeartbeatWatchdog : Int := 0;
+      HeartbeatLimit : Int := 1000;
+      PeerAlive : Bool := FALSE;
+      StsReady : Bool := FALSE;
+      StsBusy : Bool := FALSE;
+      StsDone : Bool := FALSE;
+      StsFault : Bool := FALSE;
+      StepNo : Int := 0;
+      ReqOut : Bool := FALSE;
+      PartReady : Bool := FALSE;
+      AllowTake : Bool := FALSE;
+      TakeDone : Bool := FALSE;
+      ReqIn : Bool := FALSE;
+      AllowIn : Bool := FALSE;
+      PlaceDone : Bool := FALSE;
+      PartReceived : Bool := FALSE;
+      ProcessDone : Bool := FALSE;
+      DoneAck : Bool := FALSE;
+      TransferJob : Bool := FALSE;
+      ReadyForJob : Bool := FALSE;
+      JobBusy : Bool := FALSE;
+      JobDone : Bool := FALSE;
+      JobAbort : Bool := FALSE;
+      JobSource : Int := 0;
+      JobTarget : Int := 0;
+      PickAtLeft : Bool := FALSE;
+      PlaceAtLeft : Bool := FALSE;
+      PlaceRotateLeft : Bool := FALSE;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

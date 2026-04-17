@@ -1,0 +1,7 @@
+// FB_Cylinder
+// Assumed interface: CmdExtend, FbExtend, FbRetract, OutValve, OkExtend, OkRetract, Fault.
+
+#OutValve := #CmdExtend;
+#OkExtend := #CmdExtend AND #FbExtend;
+#OkRetract := (NOT #CmdExtend) AND #FbRetract;
+#Fault := (#CmdExtend AND NOT #FbExtend AND #FbRetract) OR ((NOT #CmdExtend) AND NOT #FbRetract AND #FbExtend);

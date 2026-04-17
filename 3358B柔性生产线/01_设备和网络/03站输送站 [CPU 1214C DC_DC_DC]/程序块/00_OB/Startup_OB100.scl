@@ -1,0 +1,38 @@
+// Startup_OB100
+// Startup initialization. Keep OB123 only for software generated use.
+
+DB_Station.ModeAuto := FALSE;
+DB_Station.ModeManual := TRUE;
+DB_Station.RunCmd := FALSE;
+DB_Station.EnableAuto := FALSE;
+DB_Station.EnableManual := TRUE;
+DB_Station.ResetReq := FALSE;
+DB_Station.CycleActive := FALSE;
+DB_Station.StationDone := FALSE;
+DB_Station.FaultActive := FALSE;
+DB_Station.FaultSensor := FALSE;
+DB_Station.FaultActuator := FALSE;
+DB_Station.FaultMotion := FALSE;
+DB_Station.Step := 0;
+DB_Station.ActiveStepLast := 0;
+DB_Station.ActiveStepWatchdog := 0;
+DB_Station.AxisHomed := FALSE;
+DB_Station.AxisCurrentStation := 0;
+DB_Station.AxisPickStation := 0;
+DB_Station.AxisPlaceStation := 0;
+DB_Station.AxisTargetStation := 0;
+DB_Station.AxisMoveBusy := FALSE;
+DB_Station.AxisMoveTowardRight := FALSE;
+DB_Station.AxisCurrentPulse := 0;
+DB_Station.AxisTargetPulse := 0;
+DB_Station.LampCmdYellow := TRUE;
+DB_Station.LampCmdGreen := FALSE;
+DB_Station.LampCmdRed := FALSE;
+
+DB_Comm.CmdAuto := FALSE;
+DB_Comm.CmdStart := FALSE;
+DB_Comm.CmdReset := FALSE;
+DB_Comm.HeartbeatTx := FALSE;
+DB_Comm.HeartbeatRxLast := FALSE;
+DB_Comm.HeartbeatWatchdog := 0;
+DB_Comm.PeerAlive := FALSE;

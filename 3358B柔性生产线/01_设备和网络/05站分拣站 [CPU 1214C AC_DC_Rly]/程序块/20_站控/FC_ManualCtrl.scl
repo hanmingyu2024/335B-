@@ -1,0 +1,8 @@
+// FC_ManualCtrl - Station 05
+DB_Station.CycleActive := FALSE;
+DB_Station.StationDone := FALSE;
+DB_Station.OutMotorRun := DB_Station.ManMotorRun AND DB_Station.EnableManual;
+DB_Station.OutPusher1 := DB_Station.ManPusher1 AND DB_Station.EnableManual;
+DB_Station.OutPusher2 := DB_Station.ManPusher2 AND DB_Station.EnableManual;
+DB_Station.OutPusher3 := DB_Station.ManPusher3 AND DB_Station.EnableManual;
+DB_Station.AnalogCmd := DB_Station.ManAnalogCmd;

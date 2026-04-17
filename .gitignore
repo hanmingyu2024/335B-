@@ -1,0 +1,10 @@
+/.mypy_cache/
+/tools/__pycache__/
+/artifacts/
+/output/
+/_tia_docs_v17/
+/codex_tia_smoketest.txt
+/codex_builder_groups.txt
+/tia_test_output.txt
+/tia_test_output_after_group.txt
+/typeid_probe_v17.txt

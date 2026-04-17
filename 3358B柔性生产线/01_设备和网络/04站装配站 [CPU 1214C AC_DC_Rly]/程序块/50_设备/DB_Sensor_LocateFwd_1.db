@@ -1,0 +1,15 @@
+DATA_BLOCK "DB_Sensor_LocateFwd_1"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      RawIn : Bool := FALSE;
+      Valid : Bool := FALSE;
+      Rising : Bool := FALSE;
+      Falling : Bool := FALSE;
+      LastIn : Bool := FALSE;
+      tOnDelay : Time := T#50MS;
+      tOffDelay : Time := T#50MS;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

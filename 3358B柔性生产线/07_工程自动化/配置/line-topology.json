@@ -1,0 +1,143 @@
+﻿{
+  "portalMode": "WithoutUserInterface",
+  "openness": {
+    "assemblyPath": "D:\\Program Files\\Siemens\\Automation\\Portal V17\\PublicAPI\\V17\\Siemens.Engineering.dll",
+    "preferredVersions": [
+      "V17",
+      "V21",
+      "V20",
+      "V19",
+      "V18"
+    ]
+  },
+  "project": {
+    "cloneTemplateBeforeOpen": true,
+    "templatePath": "C:\\Users\\韩明宇\\Desktop\\v17程序\\335B柔性生产线\\335B柔性生产线.ap17",
+    "targetPath": "D:\\TIAProjects\\3358B\\335B柔性生产线.ap17"
+  },
+  "network": {
+    "subnetName": "PN_3358B",
+    "subnetTypeIdentifier": "System:Subnet.Ethernet",
+    "subnetMask": "255.255.255.0",
+    "routerAddress": ""
+  },
+  "connectionStrategy": {
+    "mode": "template-fixed-ids",
+    "description": "PUT/GET connection objects are pre-created in the TIA template project. Automation keeps device names stable and only stamps network parameters."
+  },
+  "stations": [
+    {
+      "id": "S01",
+      "stationNo": 1,
+      "deviceName": "S7-1200 station_1",
+      "deviceNameCandidates": [
+        "S7-1200 station_1",
+        "01站供料站",
+        "01站供料站 [CPU 1214C AC_DC_Rly]"
+      ],
+      "interfaceNameHint": "PN/IE_1",
+      "ipAddress": "192.168.10.11",
+      "pnDeviceName": "plc-3358b-s01",
+      "createIoSystem": false
+    },
+    {
+      "id": "S02",
+      "stationNo": 2,
+      "deviceName": "S7-1200 station_2",
+      "deviceNameCandidates": [
+        "S7-1200 station_2",
+        "02站加工站",
+        "02站加工站 [CPU 1214C AC_DC_Rly]"
+      ],
+      "interfaceNameHint": "PN/IE_1",
+      "ipAddress": "192.168.10.12",
+      "pnDeviceName": "plc-3358b-s02",
+      "createIoSystem": false
+    },
+    {
+      "id": "S03",
+      "stationNo": 3,
+      "deviceName": "S7-1200 station_3",
+      "deviceNameCandidates": [
+        "S7-1200 station_3",
+        "03站输送站",
+        "03站输送站 [CPU 1214C DC_DC_DC]"
+      ],
+      "interfaceNameHint": "PN/IE_1",
+      "ipAddress": "192.168.10.13",
+      "pnDeviceName": "plc-3358b-s03",
+      "createIoSystem": false
+    },
+    {
+      "id": "S04",
+      "stationNo": 4,
+      "deviceName": "S7-1200 station_4",
+      "deviceNameCandidates": [
+        "S7-1200 station_4",
+        "04站装配站",
+        "04站装配站 [CPU 1214C AC_DC_Rly]"
+      ],
+      "interfaceNameHint": "PN/IE_1",
+      "ipAddress": "192.168.10.14",
+      "pnDeviceName": "plc-3358b-s04",
+      "createIoSystem": false
+    },
+    {
+      "id": "S05",
+      "stationNo": 5,
+      "deviceName": "S7-1200 station_5",
+      "deviceNameCandidates": [
+        "S7-1200 station_5",
+        "05站分拣站",
+        "05站分拣站 [CPU 1214C AC_DC_Rly]"
+      ],
+      "interfaceNameHint": "PN/IE_1",
+      "ipAddress": "192.168.10.15",
+      "pnDeviceName": "plc-3358b-s05",
+      "createIoSystem": false
+    }
+  ],
+  "putGetConnections": [
+    {
+      "link": "S02",
+      "connectionId": 2,
+      "localStation": "S01",
+      "remoteStation": "S02",
+      "localShadowDb": "DB_Link_S02",
+      "remoteCommDb": "DB_Comm"
+    },
+    {
+      "link": "S03",
+      "connectionId": 3,
+      "localStation": "S01",
+      "remoteStation": "S03",
+      "localShadowDb": "DB_Link_S03",
+      "remoteCommDb": "DB_Comm"
+    },
+    {
+      "link": "S04",
+      "connectionId": 4,
+      "localStation": "S01",
+      "remoteStation": "S04",
+      "localShadowDb": "DB_Link_S04",
+      "remoteCommDb": "DB_Comm"
+    },
+    {
+      "link": "S05",
+      "connectionId": 5,
+      "localStation": "S01",
+      "remoteStation": "S05",
+      "localShadowDb": "DB_Link_S05",
+      "remoteCommDb": "DB_Comm"
+    }
+  ],
+  "onlineValidation": {
+    "enabled": false,
+    "stationId": "S01"
+  }
+}
+
+
+
+
+

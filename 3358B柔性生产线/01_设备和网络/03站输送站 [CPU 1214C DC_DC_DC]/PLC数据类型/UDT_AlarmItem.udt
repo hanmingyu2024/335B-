@@ -1,0 +1,8 @@
+TYPE "UDT_AlarmItem"
+VERSION : 0.1
+   STRUCT
+      Active : Bool;
+      Ack : Bool;
+      Code : Word;
+   END_STRUCT;
+END_TYPE

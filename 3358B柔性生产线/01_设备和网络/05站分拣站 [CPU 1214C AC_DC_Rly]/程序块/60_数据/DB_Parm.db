@@ -1,0 +1,14 @@
+DATA_BLOCK "DB_Parm"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+
+      StationNo : Int := 5;
+      tSortWindow : Time := T#500MS;
+      tPusherDelay : Time := T#500MS;
+      tConveyorDelay : Time := T#1S;
+      AnalogSpeed : Word := W#16#07D0;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

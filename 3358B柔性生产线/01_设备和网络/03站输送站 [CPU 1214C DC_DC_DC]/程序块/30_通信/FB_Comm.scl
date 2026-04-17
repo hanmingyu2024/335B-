@@ -1,0 +1,70 @@
+// FB_Comm
+// Station 03 transport status and job interface.
+// Horizontal axis order is Home(0) -> Feed(1) -> Process(2) -> Assembly(4) -> Sort(5).
+
+DB_Comm.HeartbeatTx := NOT DB_Comm.HeartbeatTx;
+
+IF DB_Comm.HeartbeatRx <> DB_Comm.HeartbeatRxLast THEN
+    DB_Comm.HeartbeatRxLast := DB_Comm.HeartbeatRx;
+    DB_Comm.HeartbeatWatchdog := 0;
+    DB_Comm.PeerAlive := TRUE;
+ELSIF DB_Comm.HeartbeatWatchdog < DB_Comm.HeartbeatLimit THEN
+    DB_Comm.HeartbeatWatchdog := DB_Comm.HeartbeatWatchdog + 1;
+ELSE
+    DB_Comm.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Comm.HeartbeatWatchdog >= DB_Comm.HeartbeatLimit THEN
+    DB_Comm.PeerAlive := FALSE;
+END_IF;
+
+IF DB_Station.InHome THEN
+    DB_Station.AxisHomed := TRUE;
+    IF (DB_Station.Step = 0) AND (NOT DB_Station.CycleActive) AND (NOT DB_Station.AxisMoveBusy) THEN
+        DB_Station.AxisCurrentStation := 0;
+        DB_Station.AxisCurrentPulse := DB_Parm.AxisHomePulse;
+    END_IF;
+END_IF;
+
+IF DB_Station.ModeAuto AND (DB_Station.RunCmd OR DB_Comm.CmdStart) AND (NOT DB_Comm.PeerAlive) THEN
+    DB_Station.FaultActive := TRUE;
+    DB_Station.RunCmd := FALSE;
+    DB_Station.CycleActive := FALSE;
+END_IF;
+
+DB_Station.ResetReq := DB_Station.ResetReq OR DB_Comm.CmdReset;
+
+DB_Comm.StsReady := DB_Station.StationReady;
+DB_Comm.StsBusy := DB_Station.StationBusy;
+DB_Comm.StsDone := DB_Station.StationDone;
+DB_Comm.StsFault := DB_Station.FaultActive;
+DB_Comm.StepNo := DB_Station.Step;
+DB_Comm.ReqOut := FALSE;
+DB_Comm.PartReady := FALSE;
+DB_Comm.AllowTake := FALSE;
+DB_Comm.TakeDone := FALSE;
+DB_Comm.ReqIn := FALSE;
+DB_Comm.AllowIn := FALSE;
+DB_Comm.PlaceDone := FALSE;
+DB_Comm.PartReceived := FALSE;
+DB_Comm.ProcessDone := FALSE;
+DB_Comm.DoneAck := FALSE;
+DB_Comm.ReadyForJob :=
+    (DB_Station.Step = 0)
+    AND DB_Station.AxisHomed
+    AND DB_Station.InLiftUp
+    AND DB_Station.InArmIn
+    AND (NOT DB_Station.AxisMoveBusy)
+    AND DB_Comm.PeerAlive
+    AND (NOT DB_Station.FaultActive);
+DB_Comm.JobBusy :=
+    DB_Station.CycleActive
+    OR (DB_Station.Step <> 0)
+    OR DB_Comm.TransferJob
+    OR DB_Station.AxisMoveBusy;
+
+IF DB_Comm.CmdStop THEN
+    DB_Station.RunCmd := FALSE;
+    DB_Station.CycleActive := FALSE;
+    DB_Station.AxisMoveBusy := FALSE;
+END_IF;

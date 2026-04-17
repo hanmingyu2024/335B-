@@ -1,0 +1,14 @@
+DATA_BLOCK "DB_Alarm"
+{ S7_Optimized_Access := 'TRUE' }
+VERSION : 0.1
+NON_RETAIN
+   VAR
+      Active : Bool := FALSE;
+      Material : Bool := FALSE;
+      Sensor : Bool := FALSE;
+      Actuator : Bool := FALSE;
+      Motion : Bool := FALSE;
+      AlarmCode : Word := W#16#0;
+   END_VAR
+BEGIN
+END_DATA_BLOCK

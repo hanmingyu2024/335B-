@@ -1,0 +1,20 @@
+TYPE "UDT_LineState"
+VERSION : 0.1
+   STRUCT
+      CmdAuto : Bool;
+      CmdStart : Bool;
+      CmdStop : Bool;
+      CmdReset : Bool;
+      StsReady : Bool;
+      StsRun : Bool;
+      StsFault : Bool;
+      StsPaused : Bool;
+      CycleActive : Bool;
+      Step : Int;
+      CurrentCycle : DInt;
+      TotalCount : DInt;
+      ActiveSource : Int;
+      ActiveTarget : Int;
+      FaultCode : Word;
+   END_STRUCT;
+END_TYPE

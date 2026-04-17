@@ -1,0 +1,129 @@
+TYPE "UDT_StationState"
+VERSION : 0.1
+   STRUCT
+      // Mode / command
+      PB_Start : Bool;
+      PB_Stop : Bool;
+      PB_EStop : Bool;
+      SelSingle : Bool;
+      ModeAuto : Bool;
+      ModeManual : Bool;
+      RunCmd : Bool;
+      EnableAuto : Bool;
+      EnableManual : Bool;
+      ResetReq : Bool;
+
+      // Station state
+      StationReady : Bool;
+      StationBusy : Bool;
+      StationDone : Bool;
+      CycleActive : Bool;
+      FaultActive : Bool;
+      FaultMaterial : Bool;
+      FaultSensor : Bool;
+      FaultActuator : Bool;
+      FaultMotion : Bool;
+      LampCmdYellow : Bool;
+      LampCmdGreen : Bool;
+      LampCmdRed : Bool;
+      Step : Int;
+      ActiveStepLast : Int;
+      ActiveStepWatchdog : Int;
+      ActiveStepLimit : Int;
+      SortClass : Int;
+      SortWindowReady : Bool;
+
+      // Generic input signals
+      InTopFwd : Bool;
+      InTopBwd : Bool;
+      InPushFwd : Bool;
+      InPushBwd : Bool;
+      InOutPos : Bool;
+      InSupplyLow : Bool;
+      InNoPart : Bool;
+      InMetalOk : Bool;
+      InPartAtProc : Bool;
+      InClampOk : Bool;
+      InTableFwd : Bool;
+      InTableBwd : Bool;
+      InHeadUp : Bool;
+      InHeadDown : Bool;
+      InHome : Bool;
+      InRightLimit : Bool;
+      InLeftLimit : Bool;
+      InLiftDown : Bool;
+      InLiftUp : Bool;
+      InRotLeft : Bool;
+      InRotRight : Bool;
+      InArmOut : Bool;
+      InArmIn : Bool;
+      InGripOk : Bool;
+      InServoAlarm : Bool;
+      InPartLow : Bool;
+      InPartPresent : Bool;
+      InTrayLeft : Bool;
+      InTrayRight : Bool;
+      InAsmPartAtPos : Bool;
+      InStopperOk : Bool;
+      InDropOk : Bool;
+      InSwingLeft : Bool;
+      InSwingRight : Bool;
+      InHandDown : Bool;
+      InHandUp : Bool;
+      InEncB : Bool;
+      InEncA : Bool;
+      InEncZ : Bool;
+      InInfeedPart : Bool;
+      InInductive : Bool;
+      InFiber1 : Bool;
+      InPusher1Fwd : Bool;
+      InPusher2Fwd : Bool;
+      InPusher3Fwd : Bool;
+
+      // Generic output signals
+      OutTopValve : Bool;
+      OutPushValve : Bool;
+      OutClampValve : Bool;
+      OutTableValve : Bool;
+      OutHeadValve : Bool;
+      OutPulse : Bool;
+      OutDir : Bool;
+      OutLiftValve : Bool;
+      OutRotLeftValve : Bool;
+      OutRotRightValve : Bool;
+      OutArmOutValve : Bool;
+      OutGripValve : Bool;
+      OutReleaseValve : Bool;
+      OutStopperValve : Bool;
+      OutRotateValve : Bool;
+      OutHandDownValve : Bool;
+      OutMotorRun : Bool;
+      OutPusher1 : Bool;
+      OutPusher2 : Bool;
+      OutPusher3 : Bool;
+      AnalogCmd : Word;
+
+      // Manual command signals
+      ManTopValve : Bool;
+      ManPushValve : Bool;
+      ManClampValve : Bool;
+      ManTableValve : Bool;
+      ManHeadValve : Bool;
+      ManPulse : Bool;
+      ManDir : Bool;
+      ManLiftUp : Bool;
+      ManRotLeft : Bool;
+      ManRotRight : Bool;
+      ManArmOut : Bool;
+      ManGripClamp : Bool;
+      ManGripRelease : Bool;
+      ManStopper : Bool;
+      ManRotate : Bool;
+      ManHandDown : Bool;
+      ManMotorRun : Bool;
+      ManPusher1 : Bool;
+      ManPusher2 : Bool;
+      ManPusher3 : Bool;
+      ManAnalogCmd : Word;
+   END_STRUCT;
+END_TYPE

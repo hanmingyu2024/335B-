@@ -1,0 +1,41 @@
+// FC_Reset
+// Unified station reset handling.
+
+IF DB_Station.ResetReq OR DB_Comm.CmdReset THEN
+    DB_Station.Step := 0;
+    DB_Station.RunCmd := FALSE;
+    DB_Station.CycleActive := FALSE;
+    DB_Station.StationDone := FALSE;
+    DB_Station.FaultActive := FALSE;
+    DB_Station.FaultMaterial := FALSE;
+    DB_Station.FaultSensor := FALSE;
+    DB_Station.FaultActuator := FALSE;
+    DB_Station.FaultMotion := FALSE;
+    DB_Station.ActiveStepLast := 0;
+    DB_Station.ActiveStepWatchdog := 0;
+    DB_Station.SortClass := 0;
+    DB_Station.ResetReq := FALSE;
+    DB_Comm.ReqOut := FALSE;
+    DB_Comm.PartReady := FALSE;
+    DB_Comm.HeartbeatRxLast := DB_Comm.HeartbeatRx;
+    DB_Comm.HeartbeatWatchdog := 0;
+    DB_Comm.PeerAlive := FALSE;
+    DB_Comm.AllowTake := FALSE;
+    DB_Comm.TakeDone := FALSE;
+    DB_Comm.ReqIn := FALSE;
+    DB_Comm.AllowIn := FALSE;
+    DB_Comm.PlaceDone := FALSE;
+    DB_Comm.PartReceived := FALSE;
+    DB_Comm.ProcessDone := FALSE;
+    DB_Comm.DoneAck := FALSE;
+    DB_Comm.TransferJob := FALSE;
+    DB_Comm.ReadyForJob := FALSE;
+    DB_Comm.JobBusy := FALSE;
+    DB_Comm.JobDone := FALSE;
+    DB_Comm.JobAbort := FALSE;
+    DB_Comm.JobSource := 0;
+    DB_Comm.JobTarget := 0;
+    DB_Comm.PickAtLeft := FALSE;
+    DB_Comm.PlaceAtLeft := FALSE;
+    DB_Comm.PlaceRotateLeft := FALSE;
+END_IF;

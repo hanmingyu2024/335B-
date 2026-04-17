@@ -1,0 +1,5 @@
+// FB_Motor
+// Assumed interface: CmdRun, FbRun, OutRun, Fault.
+
+#OutRun := #CmdRun;
+#Fault := #CmdRun AND NOT #FbRun;

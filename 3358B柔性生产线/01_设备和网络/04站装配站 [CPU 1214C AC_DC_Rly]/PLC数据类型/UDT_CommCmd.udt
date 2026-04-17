@@ -1,0 +1,22 @@
+TYPE "UDT_CommCmd"
+VERSION : 0.1
+   STRUCT
+      CmdAuto : Bool;
+      CmdStart : Bool;
+      CmdStop : Bool;
+      CmdReset : Bool;
+      AllowTake : Bool;
+      ReqIn : Bool;
+      AllowIn : Bool;
+      PlaceDone : Bool;
+      TakeDone : Bool;
+      DoneAck : Bool;
+      TransferJob : Bool;
+      JobAbort : Bool;
+      JobSource : Int;
+      JobTarget : Int;
+      PickAtLeft : Bool;
+      PlaceAtLeft : Bool;
+      PlaceRotateLeft : Bool;
+   END_STRUCT;
+END_TYPE

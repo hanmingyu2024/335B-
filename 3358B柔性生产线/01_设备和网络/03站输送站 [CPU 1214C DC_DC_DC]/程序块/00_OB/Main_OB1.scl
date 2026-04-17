@@ -1,0 +1,16 @@
+// Main_OB1
+// Main cycle dispatcher.
+
+"FC_IMap"();
+
+// Run local station logic first so comm/status blocks publish current-scan values.
+"FB_StationCtrl"();
+"FB_Alarm"();
+
+// FB_Alarm may raise FaultActive after FB_StationCtrl has already evaluated ready/busy.
+DB_Station.StationReady := NOT DB_Station.FaultActive;
+DB_Station.StationBusy := DB_Station.CycleActive;
+"FC_Lights"();
+
+"FB_Comm"();
+"FC_QMap"();

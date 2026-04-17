@@ -1,0 +1,11 @@
+// FC_IMap - Station 02
+DB_Station.InPartAtProc := %I0.0;
+DB_Station.InClampOk := %I0.1;
+DB_Station.InTableFwd := %I0.2;
+DB_Station.InTableBwd := %I0.3;
+DB_Station.InHeadUp := %I0.4;
+DB_Station.InHeadDown := %I0.5;
+DB_Station.PB_Stop := %I1.2;
+DB_Station.PB_Start := %I1.3;
+DB_Station.PB_EStop := %I1.4;
+DB_Station.SelSingle := %I1.5;

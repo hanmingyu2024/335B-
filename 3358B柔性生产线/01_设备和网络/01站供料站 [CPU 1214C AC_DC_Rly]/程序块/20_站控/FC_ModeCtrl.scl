@@ -1,0 +1,24 @@
+// FC_ModeCtrl
+// Mode and run permission processing.
+
+DB_Station.ModeAuto := DB_Comm.CmdAuto OR (NOT DB_Station.SelSingle);
+DB_Station.ModeManual := NOT DB_Station.ModeAuto;
+
+IF DB_Station.PB_EStop THEN
+    DB_Station.RunCmd := FALSE;
+    DB_Station.EnableAuto := FALSE;
+    DB_Station.EnableManual := FALSE;
+    DB_Station.FaultActive := TRUE;
+ELSE
+    DB_Station.EnableAuto := DB_Station.ModeAuto;
+    DB_Station.EnableManual := DB_Station.ModeManual;
+END_IF;
+
+IF DB_Station.PB_Stop OR DB_Comm.CmdStop THEN
+    DB_Station.RunCmd := FALSE;
+    DB_Station.CycleActive := FALSE;
+END_IF;
+
+IF (DB_Station.PB_Start OR DB_Comm.CmdStart) AND DB_Station.EnableAuto AND NOT DB_Station.FaultActive THEN
+    DB_Station.RunCmd := TRUE;
+END_IF;
